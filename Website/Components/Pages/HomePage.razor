@@ -1,0 +1,12 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+
+@code
+{
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // The homepage is just a placeholder until we actually have something to display on it
+        // i.e. most recent games, current champion, stuff like that.
+        NavigationManager.NavigateTo("games/history");
+    }
+}

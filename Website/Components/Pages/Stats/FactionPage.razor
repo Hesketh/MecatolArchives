@@ -1,0 +1,46 @@
+﻿@page "/stats/factions/{FactionIdentifier:guid}"
+@using Hesketh.MecatolArchives.API.Data
+@using Hesketh.MecatolArchives.API.Client.Clients
+@using Hesketh.MecatolArchives.Website.Components.Controls;
+@using Hesketh.MecatolArchives.Website.Helpers
+@inject StatisticClient StatisticClient
+@inject FactionClient FactionClient
+
+<PageTitle>@_title</PageTitle>
+
+<MudCard>
+    <MudCardHeader>
+        <div class="d-flex align-center">
+            <MudImage Height="48" Width="48"
+                      Src="@FactionIconHelper.GetFactionIcon(_title)"
+                      Style="display: inline-block; margin-right: 8px" />
+            <MudText Style="display: inline-block; text-align: center;"
+                     Typo="Typo.h4">@_title</MudText>
+        </div>
+    </MudCardHeader>
+    <MudCardContent>
+        <div style="padding-bottom: 16px">
+            <StatisticTable Statistics="@(new[] { _statistics.Overall })"/>
+        </div>
+        
+        <StatisticTable Statistics="@_statistics.Stats"
+                        NavigationFormat="stats/people/{0}"/>
+    </MudCardContent>
+</MudCard>
+
+@code
+{
+    [Parameter] public Guid FactionIdentifier { get; set; }
+    private Statistics _statistics = new();
+    private string _title = "Faction";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _statistics = await StatisticClient.GetFactionPeopleStatistics(FactionIdentifier);
+
+        var faction = await FactionClient.GetAsync(FactionIdentifier);
+        _title = faction.Name;
+
+        StateHasChanged();
+    }
+}

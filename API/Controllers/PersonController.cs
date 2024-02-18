@@ -2,33 +2,52 @@
 using Hesketh.MecatolArchives.API.Helpers;
 using Hesketh.MecatolArchives.DB;
 using Hesketh.MecatolArchives.DB.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hesketh.MecatolArchives.API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("people")]
+[Authorize]
 public sealed class PersonController : ControllerBase
 {
-    private readonly CrudControllerHelper<DBM.Person, DTM.Person, DTP.Person> _crud;
+    private readonly CrudControllerHelper<Person, Data.Person, Data.Person, Data.Post.Person> _crud;
 
     public PersonController(MecatolArchivesDbContext db, IMapper mapper)
     {
-        _crud = new CrudControllerHelper<Person, Data.Person, Data.Post.Person>(db, mapper);
+        _crud = new CrudControllerHelper<Person, Data.Person, Data.Person, Data.Post.Person>(db, mapper);
     }
 
     [HttpGet("{identifier}")]
-    public async Task<ActionResult<DTM.Person>> Get(Guid identifier) => await _crud.GetAsync(identifier);
+    [AllowAnonymous]
+    public async Task<ActionResult<Data.Person>> Get(Guid identifier)
+    {
+        return await _crud.GetAsync(identifier);
+    }
 
     [HttpGet]
-    public async Task<ActionResult<ICollection<DTM.Person>>> Get() => await _crud.GetAsync();
+    [AllowAnonymous]
+    public async Task<ActionResult<ICollection<Data.Person>>> Get()
+    {
+        return await _crud.GetAsync();
+    }
 
     [HttpPost]
-    public async Task<ActionResult<DTM.Person>> Post(DTP.Person model) => await _crud.PostAsync(model);
+    public async Task<ActionResult<Data.Person>> Post(Data.Post.Person model)
+    {
+        return await _crud.PostAsync(model);
+    }
 
     [HttpPut]
-    public async Task<ActionResult<DTM.Person>> Put(DTM.Person model) => await _crud.PutAsync(model);
+    public async Task<ActionResult<Data.Person>> Put(Data.Person model)
+    {
+        return await _crud.PutAsync(model);
+    }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete(Guid identifier) => await _crud.DeleteAsync(identifier);
+    [HttpDelete("{identifier}")]
+    public async Task<IActionResult> Delete(Guid identifier)
+    {
+        return await _crud.DeleteAsync(identifier);
+    }
 }

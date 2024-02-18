@@ -1,0 +1,324 @@
+﻿@using Hesketh.MecatolArchives.API.Client.Clients
+@using Hesketh.MecatolArchives.API.Data.Post
+@using Hesketh.MecatolArchives.Website.Helpers
+@using Variant = Hesketh.MecatolArchives.API.Data.Variant
+@using Expansion = Hesketh.MecatolArchives.API.Data.Expansion
+@using Faction = Hesketh.MecatolArchives.API.Data.Faction
+@using Person = Hesketh.MecatolArchives.API.Data.Person
+@using Play = Hesketh.MecatolArchives.API.Data.Play
+@using Colour = Hesketh.MecatolArchives.API.Data.Colour
+@inject PlayClient PlayClient
+@inject VariantClient VariantClient
+@inject ColourClient ColourClient
+@inject FactionClient FactionClient
+@inject PersonClient PersonClient
+@inject ExpansionClient ExpansionClient
+@inject IDialogService DialogService
+
+<EditForm Model="@_play"
+          OnValidSubmit="Submit">
+    <MudDialog Style="max-height: 100vh; max-width: 100vw; overflow-y: auto;">
+        <TitleContent>
+            <MudText Typo="Typo.h4">
+                Play
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudGrid>
+                <MudItem xs="4">
+                    <MudDatePicker @bind-Date="_play.UtcDate" Label="Date" />
+                </MudItem>
+
+                <MudItem xs="4">
+                    <MudNumericField @bind-Value="_play.RulesVersion" Label="Rules Version" />
+                </MudItem>
+
+                <MudItem xs="4">
+                    <MudNumericField @bind-Value="_play.PointGoal" Label="Point Goal" />
+                </MudItem>
+
+                <MudItem xs="6">
+                    <MudSelect MultiSelection="true" T="Variant" Label="Variants" SelectAll="true" ToStringFunc="ToStringFunc">
+                        @foreach (var variant in Variants)
+                        {
+                            <MudSelectItem T="Variant" Value="@variant">@variant.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="6">
+                    <MudSelect MultiSelection="true" T="Expansion" Label="Expansions" SelectAll="true" ToStringFunc="ToStringFunc">
+                        @foreach (var expansion in Expansions)
+                        {
+                            <MudSelectItem T="Expansion" Value="@expansion">@expansion.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField T="string?" @bind-Value="_play.Map" Label="Map String" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTable T="PlayerModel"
+                              Items="_play.Players"
+                              Breakpoint="Breakpoint.None"
+                              Hover="true"
+                              Elevation="0">
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">Players</MudText>
+                            <MudSpacer />
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateNew" />
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh>Player</MudTh>
+                            <MudTh>Colour</MudTh>
+                            <MudTh>Faction</MudTh>
+                            <MudTh>Eliminated</MudTh>
+                            <MudTh>Points</MudTh>
+                            <MudTh>Winner</MudTh>
+                            <MudTh />
+                        </HeaderContent>
+                        <RowTemplate Context="playerContext">
+                            <MudTd>
+                                <MudSelect T="Person" Label="Person" @bind-Value="playerContext.Person" ToStringFunc="ToStringFunc">
+                                    @foreach (var person in People)
+                                    {
+                                        <MudSelectItem T="Person" Value="@person">@person.Name</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudTd>
+                            <MudTd>
+                                <MudSelect T="Colour" Label="Colour" @bind-Value="playerContext.Colour" ToStringFunc="ToStringFunc">
+                                    @foreach (var colour in Colours)
+                                    {
+                                        <MudSelectItem T="Colour" Style="@ColourStyleHelper.GetUnderlineStyle(colour.Hex)" Value="@colour">@colour.Name</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudTd>
+                            <MudTd>
+                                <MudSelect T="Faction" Label="Faction" @bind-Value="playerContext.Faction" ToStringFunc="ToStringFunc">
+                                    @foreach (var faction in Factions)
+                                    {
+                                        <MudSelectItem T="Faction" Value="@faction">
+                                            <div class="d-flex align-center">
+                                                <MudImage Src="@FactionIconHelper.GetFactionIcon(faction.Name)" Width="24"/>
+                                                <MudText Style="margin-left: 4px">@faction.Name</MudText>
+                                            </div>
+                                        </MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudTd>
+                            <MudTd>
+                                <MudCheckBox T="bool" @bind-Value="playerContext.Eliminated" Label="Eliminated" />
+                            </MudTd>
+                            <MudTd>
+                                <MudNumericField T="uint" @bind-Value="playerContext.Points" />
+                            </MudTd>
+                            <MudTd>
+                                <MudCheckBox T="bool" @bind-Value="playerContext.Winner" Label="Winner" />
+                            </MudTd>
+                            <MudTd>
+                                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => DeletePlayer(playerContext))" />
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit">Confirm</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code
+{
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = null!;
+    private PlayModel _play = new();
+
+    private ICollection<Variant> Variants { get; set; } = new List<Variant>();
+    private ICollection<Expansion> Expansions { get; set; } = new List<Expansion>();
+    private ICollection<Person> People { get; set; } = new List<Person>();
+    private ICollection<Faction> Factions { get; set; } = new List<Faction>();
+    private ICollection<Colour> Colours { get; set; } = new List<Colour>();
+
+    public void SetPlay(Play play)
+    {
+        _play.Identifier = play.Identifier;
+        _play.PointGoal = play.PointGoal;
+        _play.Map = play.Map;
+        _play.RulesVersion = play.RulesVersion;
+        _play.UtcDate = play.UtcDate;
+        _play.Variants = new List<Variant>(play.Variants);
+        _play.Expansions = new List<Expansion>(play.Expansions);
+        _play.Players = new List<PlayerModel>();
+
+        foreach (var player in play.Players)
+        {
+            _play.Players.Add(new PlayerModel
+                {
+                    Colour = player.Colour,
+                    Eliminated = player.Eliminated,
+                    Faction = player.Faction,
+                    Person = player.Person,
+                    Points = player.Points,
+                    Winner = player.Winner
+                });
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Variants = new List<Variant>(await VariantClient.GetAsync());
+        Expansions = new List<Expansion>(await ExpansionClient.GetAsync());
+        Factions = new List<Faction>(await FactionClient.GetAsync());
+        People = new List<Person>(await PersonClient.GetAsync());
+        Colours = new List<Colour>(await ColourClient.GetAsync());
+    }
+
+    private async void Submit()
+    {
+        if (!_play.IsValid())
+        {
+            await DialogService.ShowMessageBox("Play not Valid!", "The Play or Players do not contain valid data");
+            return;
+        }
+        
+        object? created = null;
+
+        if (_play.Identifier.HasValue)
+        {
+            created = await PlayClient.UpdateAsync(new API.Data.Put.Play
+                {
+                    Identifier = _play.Identifier.Value,
+                    ExpansionIdentifiers = _play.Expansions.Select(x => x.Identifier).ToList(),
+                    Map = _play.Map,
+                    Players = _play.Players.Select(x => new Player
+                    {
+                        ColourIdentifier = x.Colour!.Identifier,
+                        Eliminated = x.Eliminated,
+                        FactionIdentifier = x.Faction!.Identifier,
+                        PersonIdentifier = x.Person!.Identifier,
+                        Points = x.Points,
+                        Winner = x.Winner
+                    }).ToList(),
+                    PointGoal = _play.PointGoal,
+                    RulesVersion = _play.RulesVersion,
+                    UtcDate = _play.UtcDate!.Value,
+                    VariantIdentifiers = _play.Variants.Select(x => x.Identifier).ToList()
+                });
+        }
+        else
+        {
+            created = await PlayClient.CreateAsync(new API.Data.Post.Play
+                {
+                    ExpansionIdentifiers = _play.Expansions.Select(x => x.Identifier).ToList(),
+                    Map = _play.Map,
+                    Players = _play.Players.Select(x => new Player
+                    {
+                        ColourIdentifier = x.Colour!.Identifier,
+                        Eliminated = x.Eliminated,
+                        FactionIdentifier = x.Faction!.Identifier,
+                        PersonIdentifier = x.Person!.Identifier,
+                        Points = x.Points,
+                        Winner = x.Winner
+                    }).ToList(),
+                    PointGoal = _play.PointGoal,
+                    RulesVersion = _play.RulesVersion,
+                    UtcDate = _play.UtcDate!.Value,
+                    VariantIdentifiers = _play.Variants.Select(x => x.Identifier).ToList()
+                });
+        }
+
+        MudDialog.Close(DialogResult.Ok(created));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async void DeletePlayer(PlayerModel player)
+    {
+        var delete = await DialogService.ShowMessageBox("DeletePlayer", $"Are you sure you wish to remove this row?", "Yes", "No");
+        if (delete != true)
+            return;
+
+        _play.Players.Remove(player);
+
+        StateHasChanged();
+    }
+
+    private void CreateNew()
+    {
+        _play.Players.Add(new PlayerModel());
+        StateHasChanged();
+    }
+
+    private string ToStringFunc(Variant? arg)
+    {
+        return arg?.Name ?? string.Empty;
+    }
+
+    private string ToStringFunc(Expansion? arg)
+    {
+        return arg?.Name ?? string.Empty;
+    }
+
+    private string ToStringFunc(Faction? arg)
+    {
+        return arg?.Name ?? string.Empty;
+    }
+
+    private string ToStringFunc(Colour? arg)
+    {
+        return arg?.Name ?? string.Empty;
+    }
+
+    private string ToStringFunc(Person? arg)
+    {
+        return arg?.Name ?? string.Empty;
+    }
+
+    private sealed class PlayModel
+    {
+        public Guid? Identifier { get; set; } // Null if new entity
+        public DateTime? UtcDate { get; set; } = DateTime.UtcNow;
+        public double RulesVersion { get; set; } = 1.0;
+        public uint PointGoal { get; set; } = 10;
+        public string? Map { get; set; } = null;
+
+        public ICollection<Variant> Variants { get; set; } = new HashSet<Variant>();
+        public ICollection<Expansion> Expansions { get; set; } = new HashSet<Expansion>();
+        public ICollection<PlayerModel> Players { get; set; } = new HashSet<PlayerModel>();
+        
+        public bool IsValid()
+        {
+            foreach (var player in Players)
+            {
+                if (!player.IsValid())
+                    return false;
+            }
+            
+            return true;
+        }
+    }
+
+    private sealed class PlayerModel
+    {
+        public uint Points { get; set; } = 0;
+        public bool Winner { get; set; } = false;
+        public bool Eliminated { get; set; } = false;
+
+        public Person? Person { get; set; }
+        public Faction? Faction { get; set; }
+        public Colour? Colour { get; set; }
+
+        public bool IsValid()
+        {
+            return Person != null && Faction != null && Colour != null;
+        }
+    }
+}

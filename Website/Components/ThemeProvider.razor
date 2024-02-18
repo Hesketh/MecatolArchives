@@ -1,0 +1,58 @@
+﻿<CascadingValue Value="false" Name="UsePopoverProvider">
+    <MudThemeProvider Theme="Default" @bind-IsDarkMode="DarkMode" />
+</CascadingValue>
+
+@code
+{
+    [Parameter]
+    public bool DarkMode { get; set; } = false;
+
+    public static MudTheme Default => new()
+        {
+            Typography = new Typography
+            {
+                Default = new Default
+                {
+                    FontFamily = new[] { "MyriadPro" },
+                },
+                Body1 = new Body1
+                {
+                    FontFamily = new[] { "MyriadPro" },
+                },
+                Body2 = new Body2
+                {
+                    FontFamily = new[] { "MyriadPro" },
+                },
+                H1 = new H1
+                {
+                    FontFamily = new[] { "AmbroiseFirmin" },
+                    FontWeight = 700
+                },
+                H2 = new H2
+                {
+                    FontFamily = new[] { "AmbroiseFirmin" },
+                    FontWeight = 700
+                },
+                H3 = new H3
+                {
+                    FontFamily = new[] { "AmbroiseFirmin" },
+                    FontWeight = 700
+                },
+                H4 = new H4
+                {
+                    FontFamily = new[] { "AmbroiseFirmin" },
+                    FontWeight = 700
+                },
+                H5 = new H5
+                {
+                    FontFamily = new[] { "AmbroiseFirmin" },
+                    FontWeight = 700
+                },
+                H6 = new H6
+                {
+                    FontFamily = new[] { "AmbroiseFirmin" },
+                    FontWeight = 700
+                }
+            }
+        };
+}

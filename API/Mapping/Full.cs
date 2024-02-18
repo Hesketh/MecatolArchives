@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hesketh.MecatolArchives.DB.Models;
 
 namespace Hesketh.MecatolArchives.API.Mapping;
 
@@ -6,10 +7,12 @@ public sealed class Full : Profile
 {
     public Full()
     {
-        CreateMap<DBM.Colour, DTM.Colour>().ReverseMap();
-        CreateMap<DBM.Expansion, DTM.Expansion>().ReverseMap();
-        CreateMap<DBM.Faction, DTM.Faction>().ReverseMap();
-        CreateMap<DBM.Variant, DTM.Variant>().ReverseMap();
-        CreateMap<DBM.Person, DTM.Person>().ReverseMap();
+        CreateMap<Colour, Data.Colour>().ReverseMap();
+        CreateMap<Expansion, Data.Expansion>().ReverseMap();
+        CreateMap<Faction, Data.Faction>().ReverseMap();
+        CreateMap<Variant, Data.Variant>().ReverseMap();
+        CreateMap<Person, Data.Person>().ReverseMap();
+        CreateMap<Play, Data.Play>().ReverseMap();
+        CreateMap<Player, Data.Player>().ReverseMap();
     }
 }

@@ -1,0 +1,25 @@
+﻿@using Hesketh.MecatolArchives.API.Data
+
+<MudTable Items="@Statistics"
+          Hover="true" 
+          Breakpoint="Breakpoint.None"
+          Elevation="0">
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<Statistic, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
+        <MudTh Style="text-align:center;"><MudTableSortLabel SortBy="new Func<Statistic, object>(x=>x.Plays)" InitialDirection="SortDirection.Descending">Played</MudTableSortLabel></MudTh>
+        <MudTh Style="text-align:center;"><MudTableSortLabel SortBy="new Func<Statistic, object>(x=>x.Wins)">Wins</MudTableSortLabel></MudTh>
+        <MudTh Style="text-align:center;"><MudTableSortLabel SortBy="new Func<Statistic, object>(x=>x.Losses)">Losses</MudTableSortLabel></MudTh>
+        <MudTh Style="text-align:center;"><MudTableSortLabel SortBy="new Func<Statistic, object>(x=>x.WinPercentage)">Win %</MudTableSortLabel></MudTh>
+        <MudTh Style="text-align:center;"><MudTableSortLabel SortBy="new Func<Statistic, object>(x=>x.PointPercentage)">VP %</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <StatisticTableRow Context="@context" NavigationFormat="@NavigationFormat" GetCustomNamePrefixFragment="GetCustomNamePrefixFragment"/>
+    </RowTemplate>
+</MudTable>
+
+@code
+{
+    [Parameter] public IEnumerable<Statistic> Statistics { get; set; } = Enumerable.Empty<Statistic>();
+    [Parameter] public string? NavigationFormat { get; set; } = null;
+    [Parameter] public Func<object, RenderFragment?>? GetCustomNamePrefixFragment { get; set; } = null;
+}

@@ -1,0 +1,9 @@
+These fonts are for:
+card names/subtitles/rulebook headings/unit abilities like BOMBARDMENT etc (SLIDER TI4, all caps)
+the word ACTION: (Myriad pro bold italic)
+card text triggers with a colon, eg “At the start of combat:” (Myriad pro semibold)
+strategy card/game card body text and abilities (Myriad pro regular/semibold depending on taste)
+flavour text (Myriad pro regular italic)
+Box/rules cover art (remember not to say Twilight Imperium to remain in FFG fan content guidelines) (Ambroise Firmin Bold)
+
+Sourced from the TI4 Homebrew Hub Discord server. Uploaded by cacotopos

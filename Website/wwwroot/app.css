@@ -1,0 +1,85 @@
+/*
+	This CSS file matches the color scheme from MudBlazor to Bootstrap when utilized for authentication.
+	The file remains available at all times for demonstration purposes,
+	but it is exclusively employed in the 'App.razor' component when authentication is enabled.
+*/
+
+.ti-logo-text {
+    background: -webkit-linear-gradient(orange, yellow);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: underline overline;
+    position: relative;
+    text-decoration: none;
+}
+
+.ti-logo-text::after {
+    background: yellow;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    width: 100%;
+}
+
+.ti-logo-text::before {
+    background: orange;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1px;
+    width: 100%;
+}
+
+@font-face {
+    font-family: MyriadPro;
+    src: url("Fonts/Myriad Pro/Myriad Pro Regular.ttf");
+}
+
+@font-face {
+    font-family: MyriadPro;
+    src: url("Fonts/Myriad Pro/Myriad Pro Bold.ttf");
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: MyriadPro;
+    src: url("Fonts/Myriad Pro/Myriad Pro Bold.ttf");
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: MyriadPro;
+    src: url("Fonts/Myriad Pro/Myriad Pro Bold.ttf");
+    font-style: italic;
+}
+
+@font-face {
+    font-family: MyriadPro;
+    src: url("Fonts/Myriad Pro/Myriad Pro Bold.ttf");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: AmbroiseFirmin;
+    src: url("Fonts/Ambroise Firmin Bold/Ambroise Firmin Bold.otf");
+    font-weight: bold;
+}
+
+.btn-primary {
+    text-transform: uppercase;
+    --bs-btn-bg: var(--mud-palette-primary) !important;
+    --bs-btn-hover-bg: var(--mud-palette-primary-darken) !important;
+}
+
+.nav-pills {
+    --bs-nav-pills-link-active-bg: var(--mud-palette-primary) !important;
+}
+
+.nav {
+    --bs-nav-link-color: var(--mud-palette-primary) !important;
+    --bs-nav-link-hover-color: var(--mud-palette-primary-darken) !important;
+}

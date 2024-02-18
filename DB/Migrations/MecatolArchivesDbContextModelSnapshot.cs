@@ -334,12 +334,7 @@ namespace Hesketh.MecatolArchives.DB.Migrations
                     b.Property<DateTime>("UtcDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("VariantIdentifier")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Identifier");
-
-                    b.HasIndex("VariantIdentifier");
 
                     b.ToTable("Plays");
                 });
@@ -394,7 +389,12 @@ namespace Hesketh.MecatolArchives.DB.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("PlayIdentifier")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Identifier");
+
+                    b.HasIndex("PlayIdentifier");
 
                     b.ToTable("Variants");
                 });
@@ -404,17 +404,6 @@ namespace Hesketh.MecatolArchives.DB.Migrations
                     b.HasOne("Hesketh.MecatolArchives.DB.Models.Play", null)
                         .WithMany("Expansions")
                         .HasForeignKey("PlayIdentifier");
-                });
-
-            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Play", b =>
-                {
-                    b.HasOne("Hesketh.MecatolArchives.DB.Models.Variant", "Variant")
-                        .WithMany()
-                        .HasForeignKey("VariantIdentifier")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Variant");
                 });
 
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Player", b =>
@@ -452,11 +441,20 @@ namespace Hesketh.MecatolArchives.DB.Migrations
                     b.Navigation("Play");
                 });
 
+            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Variant", b =>
+                {
+                    b.HasOne("Hesketh.MecatolArchives.DB.Models.Play", null)
+                        .WithMany("Variants")
+                        .HasForeignKey("PlayIdentifier");
+                });
+
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Play", b =>
                 {
                     b.Navigation("Expansions");
 
                     b.Navigation("Players");
+
+                    b.Navigation("Variants");
                 });
 #pragma warning restore 612, 618
         }

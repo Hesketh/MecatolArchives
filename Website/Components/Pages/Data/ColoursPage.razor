@@ -1,0 +1,102 @@
+﻿@page "/data/colours"
+@using Hesketh.MecatolArchives.API.Client.Clients
+@using Hesketh.MecatolArchives.API.Data
+@using Hesketh.MecatolArchives.API.Client.Auth
+@using Hesketh.MecatolArchives.Website.Helpers
+@using Microsoft.AspNetCore.Components
+@inject ColourClient ColourClient;
+@inject IAdminCredentialStore Admin
+@inject IDialogService DialogService
+
+<PageTitle>Colours</PageTitle>
+
+<MudDataGrid T="Colour" Items="@_colours"
+             ReadOnly="@(!Admin.Set)"
+             EditMode="DataGridEditMode.Form"
+             CommittedItemChanges="CommitItemChanges"
+             EditTrigger="DataGridEditTrigger.Manual"
+             @ref="_dataGrid">
+    <ColGroup>
+        <col style="width: auto"/>
+        <col style="width: auto"/>
+        @if (!_dataGrid.ReadOnly)
+        {
+            <col style="width: 100px"/>
+        }
+    </ColGroup>
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">COLOURS</MudText>
+        <MudSpacer/>
+        @if (!_dataGrid.ReadOnly)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateNew"/>
+        }
+    </ToolBarContent>
+    <Columns>
+        <TemplateColumn Title="Colour" Required="true" SortBy="x => x.Name">
+            <CellTemplate>
+                <MudText Style="@ColourStyleHelper.GetUnderlineStyle(context.Item.Hex)">@context.Item.Name</MudText>
+            </CellTemplate>
+            <EditTemplate>
+                    <MudTextField Label="Name" T="string" Style="@ColourStyleHelper.GetUnderlineStyle(context.Item.Hex)" @bind-Value="context.Item.Name" />
+            </EditTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.Hex"/>
+        <TemplateColumn Hidden="@(_dataGrid.ReadOnly)" CellClass="d-flex justify-end" Sortable="false">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Delete(context.Item))"/>
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="@context.Actions.StartEditingItemAsync"/>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code
+{
+    private MudDataGrid<Colour> _dataGrid = null!;
+    private List<Colour> _colours = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _colours = new List<Colour>(await ColourClient.GetAsync());
+    }
+
+    private async void Delete(Colour colour)
+    {
+        var delete = await DialogService.ShowMessageBox("Delete", $"Are you sure you wish to delete {colour.Name}?", "Yes", "No");
+        if (delete != true)
+            return;
+        
+        await ColourClient.DeleteAsync(colour.Identifier);
+        _colours.Remove(colour);
+
+        StateHasChanged();
+    }
+
+    private async void CreateNew()
+    {
+        await _dataGrid.SetEditingItemAsync(new Colour());
+        StateHasChanged();
+    }
+
+    private async void CommitItemChanges(Colour colour)
+    {
+        if (colour.Identifier != Guid.Empty)
+        {
+            await ColourClient.UpdateAsync(colour);
+        }
+        else
+        {
+            var result = await ColourClient.CreateAsync(new API.Data.Post.Colour
+            {
+                Hex = colour.Hex,
+                Name = colour.Name
+            });
+            colour.Identifier = result.Identifier;
+
+            _colours.Add(colour);
+        }
+
+        StateHasChanged();
+    }
+}

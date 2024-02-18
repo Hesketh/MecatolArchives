@@ -1,0 +1,89 @@
+﻿@page "/data/variants"
+@using Hesketh.MecatolArchives.API.Client.Clients
+@using Hesketh.MecatolArchives.API.Client.Auth
+@using Variant = Hesketh.MecatolArchives.API.Data.Variant
+@inject VariantClient VariantClient;
+@inject IAdminCredentialStore Admin
+@inject IDialogService DialogService
+
+<PageTitle>Variants</PageTitle>
+
+<MudDataGrid T="Variant" Items="@_variants"
+             ReadOnly="@(!Admin.Set)"
+             EditMode="DataGridEditMode.Form"
+             CommittedItemChanges="CommitItemChanges"
+             EditTrigger="DataGridEditTrigger.Manual"
+             @ref="_dataGrid">
+    <ColGroup>
+        <col style="width: auto" />
+        @if (!_dataGrid.ReadOnly)
+        {
+            <col style="width: 100px" />
+        }
+    </ColGroup>
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">VARIANTS</MudText>
+        <MudSpacer />
+        @if (!_dataGrid.ReadOnly)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateNew" />
+        }
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Name" />
+        <TemplateColumn Hidden="@(_dataGrid.ReadOnly)" CellClass="d-flex justify-end" Sortable="false">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Delete(context.Item))" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code
+{
+    private MudDataGrid<Variant> _dataGrid = null!;
+    private List<Variant> _variants = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _variants = new List<Variant>(await VariantClient.GetAsync());
+    }
+
+    private async void Delete(Variant variant)
+    {
+        var delete = await DialogService.ShowMessageBox("Delete", $"Are you sure you wish to delete {variant.Name}?", "Yes", "No");
+        if (delete != true)
+            return;
+
+        await VariantClient.DeleteAsync(variant.Identifier);
+        _variants.Remove(variant);
+
+        StateHasChanged();
+    }
+
+    private async void CreateNew()
+    {
+        await _dataGrid.SetEditingItemAsync(new Variant());
+        StateHasChanged();
+    }
+
+    private async void CommitItemChanges(Variant variant)
+    {
+        if (variant.Identifier != Guid.Empty)
+        {
+            await VariantClient.UpdateAsync(variant);
+        }
+        else
+        {
+            var result = await VariantClient.CreateAsync(new API.Data.Post.Variant
+                {
+                    Name = variant.Name
+                });
+            variant.Identifier = result.Identifier;
+            _variants.Add(variant);
+        }
+
+        StateHasChanged();
+    }
+}

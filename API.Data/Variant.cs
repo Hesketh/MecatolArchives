@@ -2,6 +2,6 @@
 
 public sealed class Variant : IEntity
 {
-    public Guid Identifier { get; set; }
     public string Name { get; set; } = null!;
+    public Guid Identifier { get; set; }
 }

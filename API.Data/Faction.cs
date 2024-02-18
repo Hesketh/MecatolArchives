@@ -2,6 +2,6 @@
 
 public sealed class Faction : IEntity
 {
-    public Guid Identifier { get; set; }
     public string Name { get; set; } = null!;
+    public Guid Identifier { get; set; }
 }

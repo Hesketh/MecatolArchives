@@ -1,0 +1,27 @@
+﻿@page "/stats/people"
+@using Hesketh.MecatolArchives.API.Data
+@using Hesketh.MecatolArchives.API.Client.Clients
+@using Hesketh.MecatolArchives.Website.Components.Controls;
+@inject StatisticClient StatisticClient
+
+<PageTitle>People</PageTitle>
+
+<MudCard>
+    <MudCardHeader>
+        <MudText Typo="Typo.h4" Style="margin: 16px">People</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <StatisticTable Statistics="@_statistics.Stats" NavigationFormat="stats/people/{0}" />
+    </MudCardContent>
+</MudCard>
+
+@code
+{
+    private Statistics _statistics = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _statistics = await StatisticClient.GetPeopleStatistics();
+        StateHasChanged();
+    }
+}

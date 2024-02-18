@@ -1,0 +1,89 @@
+﻿@page "/data/people"
+@using Hesketh.MecatolArchives.API.Client.Clients
+@using Hesketh.MecatolArchives.API.Data
+@using Hesketh.MecatolArchives.API.Client.Auth
+@inject PersonClient PersonClient;
+@inject IAdminCredentialStore Admin
+@inject IDialogService DialogService
+
+<PageTitle>People</PageTitle>
+
+<MudDataGrid T="Person" Items="@_people"
+             ReadOnly="@(!Admin.Set)"
+             EditMode="DataGridEditMode.Form"
+             CommittedItemChanges="CommitItemChanges"
+             EditTrigger="DataGridEditTrigger.Manual"
+             @ref="_dataGrid">
+    <ColGroup>
+        <col style="width: auto" />
+        @if (!_dataGrid.ReadOnly)
+        {
+            <col style="width: 100px" />
+        }
+    </ColGroup>
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">PEOPLE</MudText>
+        <MudSpacer />
+        @if (!_dataGrid.ReadOnly)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateNew" />
+        }
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Name" />
+        <TemplateColumn Hidden="@(_dataGrid.ReadOnly)" CellClass="d-flex justify-end" Sortable="false">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Delete(context.Item))" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code
+{
+    private MudDataGrid<Person> _dataGrid = null!;
+    private List<Person> _people = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _people = new List<Person>(await PersonClient.GetAsync());
+    }
+
+    private async void Delete(Person person)
+    {
+        var delete = await DialogService.ShowMessageBox("Delete", $"Are you sure you wish to delete {person.Name}?", "Yes", "No");
+        if (delete != true)
+            return;
+
+        await PersonClient.DeleteAsync(person.Identifier);
+        _people.Remove(person);
+
+        StateHasChanged();
+    }
+
+    private async void CreateNew()
+    {
+        await _dataGrid.SetEditingItemAsync(new Person());
+        StateHasChanged();
+    }
+
+    private async void CommitItemChanges(Person person)
+    {
+        if (person.Identifier != Guid.Empty)
+        {
+            await PersonClient.UpdateAsync(person);
+        }
+        else
+        {
+            var result = await PersonClient.CreateAsync(new API.Data.Post.Person
+                {
+                    Name = person.Name
+                });
+            person.Identifier = result.Identifier;
+            _people.Add(person);
+        }
+
+        StateHasChanged();
+    }
+}

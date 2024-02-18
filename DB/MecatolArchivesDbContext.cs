@@ -5,9 +5,11 @@ namespace Hesketh.MecatolArchives.DB;
 
 public sealed class MecatolArchivesDbContext : DbContext
 {
-    private const string UnknownName = "_Unknown_";
+    public const string UnknownName = "_Unknown_";
 
-    public MecatolArchivesDbContext(DbContextOptions<MecatolArchivesDbContext> options) : base(options) { }
+    public MecatolArchivesDbContext(DbContextOptions<MecatolArchivesDbContext> options) : base(options)
+    {
+    }
 
     public DbSet<Colour> Colours { get; set; } = null!;
     public DbSet<Expansion> Expansions { get; set; } = null!;

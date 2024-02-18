@@ -1,34 +1,59 @@
 ﻿using AutoMapper;
+using Hesketh.MecatolArchives.API.Data;
 using Hesketh.MecatolArchives.API.Helpers;
 using Hesketh.MecatolArchives.DB;
-using Hesketh.MecatolArchives.DB.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Faction = Hesketh.MecatolArchives.DB.Models.Faction;
 
 namespace Hesketh.MecatolArchives.API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("factions")]
+[Authorize]
 public sealed class FactionController : ControllerBase
 {
-    private readonly CrudControllerHelper<DBM.Faction, DTM.Faction, DTP.Faction> _crud;
+    private readonly MecatolArchivesDbContext _db;
+    private readonly IMapper _mapper;
+    private readonly CrudControllerHelper<Faction, Data.Faction, Data.Faction, Data.Post.Faction> _crud;
 
     public FactionController(MecatolArchivesDbContext db, IMapper mapper)
     {
-        _crud = new CrudControllerHelper<Faction, Data.Faction, Data.Post.Faction>(db, mapper);
+        _db = db;
+        _mapper = mapper;
+        _crud = new CrudControllerHelper<Faction, Data.Faction, Data.Faction, Data.Post.Faction>(db, mapper);
     }
 
     [HttpGet("{identifier}")]
-    public async Task<ActionResult<DTM.Faction>> Get(Guid identifier) => await _crud.GetAsync(identifier);
+    [AllowAnonymous]
+    public async Task<ActionResult<Data.Faction>> Get(Guid identifier)
+    {
+        return await _crud.GetAsync(identifier);
+    }
 
     [HttpGet]
-    public async Task<ActionResult<ICollection<DTM.Faction>>> Get() => await _crud.GetAsync();
+    [AllowAnonymous]
+    public async Task<ActionResult<ICollection<Data.Faction>>> Get()
+    {
+        return await _crud.GetAsync();
+    }
 
     [HttpPost]
-    public async Task<ActionResult<DTM.Faction>> Post(DTP.Faction model) => await _crud.PostAsync(model);
+    public async Task<ActionResult<Data.Faction>> Post(Data.Post.Faction model)
+    {
+        return await _crud.PostAsync(model);
+    }
 
     [HttpPut]
-    public async Task<ActionResult<DTM.Faction>> Put(DTM.Faction model) => await _crud.PutAsync(model);
+    public async Task<ActionResult<Data.Faction>> Put(Data.Faction model)
+    {
+        return await _crud.PutAsync(model);
+    }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete(Guid identifier) => await _crud.DeleteAsync(identifier);
+    [HttpDelete("{identifier}")]
+    public async Task<IActionResult> Delete(Guid identifier)
+    {
+        return await _crud.DeleteAsync(identifier);
+    }
 }

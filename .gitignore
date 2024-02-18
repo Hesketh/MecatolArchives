@@ -364,3 +364,4 @@ FodyWeavers.xsd
 *.db
 *.db-wal
 WebAPI/bookofnuffle.db-shm
+*.db-shm
