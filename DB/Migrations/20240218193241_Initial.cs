@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Hesketh.MecatolArchives.DB.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateDatabase : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,9 +17,9 @@ namespace Hesketh.MecatolArchives.DB.Migrations
                 name: "Colours",
                 columns: table => new
                 {
-                    Identifier = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Hex = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Hex = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,8 +30,8 @@ namespace Hesketh.MecatolArchives.DB.Migrations
                 name: "Factions",
                 columns: table => new
                 {
-                    Identifier = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,8 +42,8 @@ namespace Hesketh.MecatolArchives.DB.Migrations
                 name: "People",
                 columns: table => new
                 {
-                    Identifier = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,11 +54,11 @@ namespace Hesketh.MecatolArchives.DB.Migrations
                 name: "Plays",
                 columns: table => new
                 {
-                    Identifier = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UtcDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    RulesVersion = table.Column<double>(type: "REAL", nullable: false),
-                    PointGoal = table.Column<uint>(type: "INTEGER", nullable: false),
-                    Map = table.Column<string>(type: "TEXT", nullable: true)
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UtcDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RulesVersion = table.Column<double>(type: "float", nullable: false),
+                    PointGoal = table.Column<long>(type: "bigint", nullable: false),
+                    Map = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -69,9 +69,9 @@ namespace Hesketh.MecatolArchives.DB.Migrations
                 name: "Expansions",
                 columns: table => new
                 {
-                    Identifier = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    PlayIdentifier = table.Column<Guid>(type: "TEXT", nullable: true)
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PlayIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -87,14 +87,14 @@ namespace Hesketh.MecatolArchives.DB.Migrations
                 name: "Players",
                 columns: table => new
                 {
-                    Identifier = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Points = table.Column<uint>(type: "INTEGER", nullable: false),
-                    Winner = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Eliminated = table.Column<bool>(type: "INTEGER", nullable: false),
-                    PersonIdentifier = table.Column<Guid>(type: "TEXT", nullable: false),
-                    PlayIdentifier = table.Column<Guid>(type: "TEXT", nullable: false),
-                    FactionIdentifier = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ColourIdentifier = table.Column<Guid>(type: "TEXT", nullable: false)
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Points = table.Column<long>(type: "bigint", nullable: false),
+                    Winner = table.Column<bool>(type: "bit", nullable: false),
+                    Eliminated = table.Column<bool>(type: "bit", nullable: false),
+                    PersonIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlayIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FactionIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ColourIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -129,9 +129,9 @@ namespace Hesketh.MecatolArchives.DB.Migrations
                 name: "Variants",
                 columns: table => new
                 {
-                    Identifier = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    PlayIdentifier = table.Column<Guid>(type: "TEXT", nullable: true)
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PlayIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
