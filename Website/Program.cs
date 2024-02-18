@@ -26,7 +26,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+if (app.Configuration.GetValue("Https", false))
+    app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
