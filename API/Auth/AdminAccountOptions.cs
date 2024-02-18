@@ -1,33 +1,25 @@
-﻿namespace BookOfNuffle.WebAPI.Auth;
+﻿namespace Hesketh.MecatolArchives.API.Auth;
 
 public class AdminAccountOptions
 {
     public const string SectionName = "Admin";
 
-    public AdminAccount[] Accounts { get; set; } = Array.Empty<AdminAccount>();
+    public AdminAccount? Account { get; set; } = null;
 
     public void Validate()
     {
-        if (Accounts.Length == 0)
+        if (Account == null)
             throw new InvalidOperationException("No admin account details specified");
 
-        if (Accounts.Any(x =>
-                Accounts.Count(y => y.Username.Equals(x.Username, StringComparison.InvariantCultureIgnoreCase)) > 1))
-            throw new InvalidOperationException("Duplicate username specified");
+        if (string.IsNullOrWhiteSpace(Account.Username))
+            throw new InvalidOperationException($"Admin account does not have a valid username");
 
-        for (var index = 0; index < Accounts.Length; index++)
-        {
-            var adminAccount = Accounts[index];
-            if (string.IsNullOrWhiteSpace(adminAccount.Username))
-                throw new InvalidOperationException($"Admin account at index {index} does not have a valid username");
-
-            if (string.IsNullOrEmpty(adminAccount.Username))
-                throw new InvalidOperationException($"Admin account at index {index} does not have a valid password");
-        }
+        if (string.IsNullOrEmpty(Account.Username))
+            throw new InvalidOperationException($"Admin account does not have a valid password");
     }
 }
 
-public class AdminAccount
+public sealed class AdminAccount
 {
     public string Username { get; set; } = null!;
     public string Password { get; set; } = null!;

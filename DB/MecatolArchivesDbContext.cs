@@ -21,13 +21,13 @@ public sealed class MecatolArchivesDbContext : DbContext
 
     public DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class, IEntity
     {
-        if (typeof(TEntity) == typeof(Colour)) return Colours as DbSet<TEntity>;
-        if (typeof(TEntity) == typeof(Expansion)) return Expansions as DbSet<TEntity>;
-        if (typeof(TEntity) == typeof(Faction)) return Factions as DbSet<TEntity>;
-        if (typeof(TEntity) == typeof(Person)) return People as DbSet<TEntity>;
-        if (typeof(TEntity) == typeof(Play)) return Plays as DbSet<TEntity>;
-        if (typeof(TEntity) == typeof(Player)) return Players as DbSet<TEntity>;
-        if (typeof(TEntity) == typeof(Variant)) return Variants as DbSet<TEntity>;
+        if (typeof(TEntity) == typeof(Colour)) return (Colours as DbSet<TEntity>)!;
+        if (typeof(TEntity) == typeof(Expansion)) return (Expansions as DbSet<TEntity>)!;
+        if (typeof(TEntity) == typeof(Faction)) return (Factions as DbSet<TEntity>)!;
+        if (typeof(TEntity) == typeof(Person)) return (People as DbSet<TEntity>)!;
+        if (typeof(TEntity) == typeof(Play)) return (Plays as DbSet<TEntity>)!;
+        if (typeof(TEntity) == typeof(Player)) return (Players as DbSet<TEntity>)!;
+        if (typeof(TEntity) == typeof(Variant)) return (Variants as DbSet<TEntity>)!;
 
         throw new InvalidOperationException($"No DbSet is registered for type {typeof(TEntity).FullName}");
     }

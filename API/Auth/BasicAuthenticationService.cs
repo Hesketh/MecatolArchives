@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace BookOfNuffle.WebAPI.Auth;
+namespace Hesketh.MecatolArchives.API.Auth;
 
 public class BasicAuthenticationService : IBasicAuthenticationService
 {
@@ -14,12 +14,13 @@ public class BasicAuthenticationService : IBasicAuthenticationService
 
     public bool Authenticate(string username, string password)
     {
-        var userMatch = _adminAccountOptions.Accounts.FirstOrDefault(x =>
-            x.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase));
-        if (userMatch == null)
+        if (_adminAccountOptions.Account == null)
+            return false;
+        
+        if (!_adminAccountOptions.Account.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase))
             return false;
 
-        if (userMatch.Password != password)
+        if (!_adminAccountOptions.Account.Password.Equals(password, StringComparison.InvariantCulture))
             return false;
 
         return true;

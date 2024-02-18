@@ -1,4 +1,4 @@
-﻿namespace BookOfNuffle.WebAPI.Auth;
+﻿namespace Hesketh.MecatolArchives.API.Auth;
 
 public interface IBasicAuthenticationService
 {

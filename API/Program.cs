@@ -1,4 +1,4 @@
-using BookOfNuffle.WebAPI.Auth;
+using Hesketh.MecatolArchives.API.Auth;
 using Hesketh.MecatolArchives.DB;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
