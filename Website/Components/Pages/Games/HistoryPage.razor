@@ -20,7 +20,7 @@
         }
     </MudCardHeader>
     <MudCardContent>
-        <PlayHistory ReadOnly="@Admin.Set" Plays="@_plays" EditPlayPressedAction="@EditGameButtonClicked"/>
+        <PlayHistory ReadOnly="@(!Admin.Set)" Plays="@_plays" EditPlayPressedAction="@EditGameButtonClicked"/>
     </MudCardContent>
 </MudCard>
 
