@@ -11,6 +11,9 @@ public sealed class Person : IEntity
     {
         get
         {
+            if (string.IsNullOrEmpty(Name))
+                return string.Empty;
+            
             var sb = new StringBuilder();
             var split = Name.Split(' ');
 

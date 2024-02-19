@@ -37,10 +37,17 @@
     <Columns>
         <TemplateColumn Required="false" IsEditable="false" Sortable="false">
             <CellTemplate>
-                <MudImage Src="@FactionIconHelper.GetFactionIcon(context.Item.Name)" Width="32"/>
+                <div class="d-flex align-center">
+                    <MudImage Src="@FactionIconHelper.GetFactionIcon(context.Item.Name)" Width="24"/>
+                    <MudText Style="display: inline-block; text-align: center; margin-left: 8px">
+                        @context.Item.Name
+                    </MudText>
+                </div>
             </CellTemplate>
+            <EditTemplate>
+                <MudTextField T="string" @bind-Value="@context.Item.Name"></MudTextField>
+            </EditTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x => x.Name"/>
         <TemplateColumn Hidden="@(_dataGrid.ReadOnly)" CellClass="d-flex justify-end" Sortable="false">
             <CellTemplate>
                 <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Delete(context.Item))"/>
@@ -87,9 +94,9 @@
         else
         {
             var result = await FactionClient.CreateAsync(new API.Data.Post.Faction
-                {
-                    Name = faction.Name
-                });
+            {
+                Name = faction.Name
+            });
             faction.Identifier = result.Identifier;
             _factions.Add(faction);
         }
