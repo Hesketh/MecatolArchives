@@ -4,6 +4,7 @@
 @using Hesketh.MecatolArchives.API.Client.Auth
 @using Hesketh.MecatolArchives.Website.Components.Dialogs
 @using Hesketh.MecatolArchives.Website.Components.Controls
+@using System.Globalization
 @inject PlayClient PlayClient
 @inject IAdminCredentialStore Admin
 @inject IDialogService DialogService
@@ -20,7 +21,9 @@
         }
     </MudCardHeader>
     <MudCardContent>
-        <PlayHistory ReadOnly="@(!Admin.Set)" Plays="@_plays" EditPlayPressedAction="@EditGameButtonClicked"/>
+        <PlayHistory ReadOnly="@(!Admin.Set)" Plays="@_plays"
+                     EditPlayPressedAction="@EditGameButtonClicked"
+                     DeletePlayPressedAction="@DeleteGameButtonClicked"/>
     </MudCardContent>
 </MudCard>
 
@@ -51,6 +54,20 @@
         await RefreshPlays();
     }
 
+    private async void DeleteGameButtonClicked(Play play)
+    {
+        var result = await DialogService.ShowMessageBox("Delete Game?", 
+            $"Are you sure you want to delete the game from {play.UtcDate.ToLocalTime().ToLongDateString()}?", 
+            "Delete", 
+            "Cancel");
+
+        if (result == true)
+        {
+            await PlayClient.DeleteAsync(play.Identifier);
+            await RefreshPlays();
+        }
+    }
+    
     private async void EditGameButtonClicked(Play play)
     {
         var parameters = new DialogParameters<EditPlayDialog> { { x => x.ExistingPlay, play } };

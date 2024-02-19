@@ -13,7 +13,10 @@
                     <MudSpacer />
                     @if (!ReadOnly && EditPlayPressedAction != null)
                     {
-                        <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="@(() => EditPlayPressedAction?.Invoke(play))" />
+                        <div class="d-flex align-center">
+                            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => DeletePlayPressedAction?.Invoke(play))" />
+                            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="@(() => EditPlayPressedAction?.Invoke(play))"/>
+                        </div>
                     }
                 </div>
             </TitleContent>
@@ -69,6 +72,7 @@
     [Parameter] public ICollection<Play> Plays { get; set; } = new List<Play>();
     [Parameter] public bool ReadOnly { get; set; } = false;
     [Parameter] public Action<Play>? EditPlayPressedAction { get; set; } = null;
+    [Parameter] public Action<Play>? DeletePlayPressedAction { get; set; } = null;
     
     private string GetFactionLink(Guid factionId)
     {
