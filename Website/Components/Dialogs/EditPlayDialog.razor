@@ -38,7 +38,7 @@
                 </MudItem>
 
                 <MudItem xs="6">
-                    <MudSelect MultiSelection="true" T="Variant" Label="Variants" SelectAll="true" ToStringFunc="ToStringFunc">
+                    <MudSelect MultiSelection="true" T="Variant" Label="Variants" SelectAll="true" @bind-SelectedValues="_play.Variants" ToStringFunc="ToStringFunc">
                         @foreach (var variant in Variants)
                         {
                             <MudSelectItem T="Variant" Value="@variant">@variant.Name</MudSelectItem>
@@ -47,7 +47,7 @@
                 </MudItem>
 
                 <MudItem xs="6">
-                    <MudSelect MultiSelection="true" T="Expansion" Label="Expansions" SelectAll="true" ToStringFunc="ToStringFunc">
+                    <MudSelect MultiSelection="true" T="Expansion" Label="Expansions" SelectAll="true" @bind-SelectedValues="_play.Expansions" ToStringFunc="ToStringFunc">
                         @foreach (var expansion in Expansions)
                         {
                             <MudSelectItem T="Expansion" Value="@expansion">@expansion.Name</MudSelectItem>
@@ -136,6 +136,8 @@
 @code
 {
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public Play? ExistingPlay { get; set; } = null;
+    
     private PlayModel _play = new();
 
     private ICollection<Variant> Variants { get; set; } = new List<Variant>();
@@ -144,15 +146,15 @@
     private ICollection<Faction> Factions { get; set; } = new List<Faction>();
     private ICollection<Colour> Colours { get; set; } = new List<Colour>();
 
-    public void SetPlay(Play play)
+    private void SetPlayModelFromTransfer(Play play)
     {
         _play.Identifier = play.Identifier;
         _play.PointGoal = play.PointGoal;
         _play.Map = play.Map;
         _play.RulesVersion = play.RulesVersion;
         _play.UtcDate = play.UtcDate;
-        _play.Variants = new List<Variant>(play.Variants);
-        _play.Expansions = new List<Expansion>(play.Expansions);
+        _play.Variants = new List<Variant>(Variants.Where(x => play.Variants.Any(y => y.Identifier == x.Identifier)));
+        _play.Expansions = new List<Expansion>(Expansions.Where(x => play.Expansions.Any(y => y.Identifier == x.Identifier)));
         _play.Players = new List<PlayerModel>();
 
         foreach (var player in play.Players)
@@ -178,6 +180,15 @@
         Factions = new List<Faction>(await FactionClient.GetAsync());
         People = new List<Person>(await PersonClient.GetAsync());
         Colours = new List<Colour>(await ColourClient.GetAsync());
+    }
+
+    protected override void OnParametersSet()
+    {
+        _play = new();
+        if (ExistingPlay != null)
+        {
+            SetPlayModelFromTransfer(ExistingPlay);
+        }
     }
 
     private async void Submit()
@@ -292,8 +303,8 @@
         public uint PointGoal { get; set; } = 10;
         public string? Map { get; set; } = null;
 
-        public ICollection<Variant> Variants { get; set; } = new HashSet<Variant>();
-        public ICollection<Expansion> Expansions { get; set; } = new HashSet<Expansion>();
+        public IEnumerable<Variant> Variants { get; set; } = new HashSet<Variant>();
+        public IEnumerable<Expansion> Expansions { get; set; } = new HashSet<Expansion>();
         public ICollection<PlayerModel> Players { get; set; } = new HashSet<PlayerModel>();
         
         public bool IsValid()

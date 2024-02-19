@@ -53,12 +53,12 @@
 
     private async void EditGameButtonClicked(Play play)
     {
-        var res = await DialogService.ShowAsync<EditPlayDialog>("Edit Play", new DialogOptions
-            {
-                FullScreen = true,
-                CloseButton = true,
-            });
-        (res.Dialog as EditPlayDialog)?.SetPlay(play);
+        var parameters = new DialogParameters<EditPlayDialog> { { x => x.ExistingPlay, play } };
+        var res = await DialogService.ShowAsync<EditPlayDialog>("Edit Play", parameters, new DialogOptions
+        {
+            FullScreen = true,
+            CloseButton = true,
+        });
         await res.Result;
 
         await RefreshPlays();
