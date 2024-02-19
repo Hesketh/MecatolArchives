@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\API.Data\API.Data.csproj" />
+    <ProjectReference Include="..\DB.Migrations.Mssql\DB.Migrations.Mssql.csproj" />
     <ProjectReference Include="..\DB.Migrations.Sqlite\DB.Migrations.Sqlite.csproj" />
     <ProjectReference Include="..\DB\DB.csproj" />
   </ItemGroup>
