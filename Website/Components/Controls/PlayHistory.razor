@@ -82,13 +82,6 @@
     
     private bool ShouldInitialExpand(Play play)
     {
-        // Show currently unplayed games as they are relevant to people
-        if (play.UtcDate > DateTime.UtcNow)
-            return true;
-
-        // We want the most recent completed game to be expanded too
-        var playedGames = Plays.Where(x => x.UtcDate <= DateTime.UtcNow)
-            .OrderBy(x => x.UtcDate);
-        return playedGames.FirstOrDefault() == play;
+        return Plays.FirstOrDefault() == play;
     }
 }

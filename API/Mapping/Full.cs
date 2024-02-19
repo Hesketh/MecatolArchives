@@ -12,7 +12,11 @@ public sealed class Full : Profile
         CreateMap<Faction, Data.Faction>().ReverseMap();
         CreateMap<Variant, Data.Variant>().ReverseMap();
         CreateMap<Person, Data.Person>().ReverseMap();
-        CreateMap<Play, Data.Play>().ReverseMap();
+        CreateMap<Play, Data.Play>().AfterMap((dbo, dto) =>
+        {
+            dto.Players = new List<DTM.Player>(dto.Players.OrderBy(x => x.Eliminated).ThenByDescending(x => x.Points));
+        });
+        CreateMap<Data.Play, Play>();
         CreateMap<Player, Data.Player>().ReverseMap();
     }
 }

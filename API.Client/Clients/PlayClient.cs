@@ -15,5 +15,10 @@ namespace Hesketh.MecatolArchives.API.Client.Clients
         {
             return await GetAsync<ICollection<Play>>($"{Endpoint}/person={personIdentifier}");
         }
+        
+        public async Task<ICollection<Play>> GetFactionsPlaysAsync(Guid factionIdentifier)
+        {
+            return await GetAsync<ICollection<Play>>($"{Endpoint}/faction={factionIdentifier}");
+        }
     }
 }

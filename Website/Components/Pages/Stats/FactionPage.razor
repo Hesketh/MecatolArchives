@@ -5,10 +5,11 @@
 @using Hesketh.MecatolArchives.Website.Helpers
 @inject StatisticClient StatisticClient
 @inject FactionClient FactionClient
+@inject PlayClient PlayClient;
 
 <PageTitle>@_title</PageTitle>
 
-<MudCard>
+<MudCard Style="margin-bottom: 16px">
     <MudCardHeader>
         <div class="d-flex align-center">
             <MudImage Height="48" Width="48"
@@ -19,12 +20,26 @@
         </div>
     </MudCardHeader>
     <MudCardContent>
-        <div style="padding-bottom: 16px">
-            <StatisticTable Statistics="@(new[] { _statistics.Overall })"/>
-        </div>
-        
+        <StatisticTable Statistics="@(new[] { _statistics.Overall })" />
+    </MudCardContent>
+</MudCard>
+
+<MudCard Style="margin-bottom: 16px">
+    <MudCardHeader>
+        <MudText Typo="Typo.h4" Style="margin: 16px">Players</MudText>
+    </MudCardHeader>
+    <MudCardContent>
         <StatisticTable Statistics="@_statistics.Stats"
-                        NavigationFormat="stats/people/{0}"/>
+                        NavigationFormat="stats/people/{0}" />
+    </MudCardContent>
+</MudCard>
+
+<MudCard Style="margin-bottom: 16px">
+    <MudCardHeader>
+        <MudText Typo="Typo.h4" Style="margin: 16px">Play History</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <PlayHistory ReadOnly="true" Plays="@_playHistory"/>
     </MudCardContent>
 </MudCard>
 
@@ -32,12 +47,14 @@
 {
     [Parameter] public Guid FactionIdentifier { get; set; }
     private Statistics _statistics = new();
+    private ICollection<Play> _playHistory = new List<Play>();
     private string _title = "Faction";
 
     protected override async Task OnParametersSetAsync()
     {
         _statistics = await StatisticClient.GetFactionPeopleStatistics(FactionIdentifier);
-
+        _playHistory = await PlayClient.GetFactionsPlaysAsync(FactionIdentifier);
+        
         var faction = await FactionClient.GetAsync(FactionIdentifier);
         _title = faction.Name;
 

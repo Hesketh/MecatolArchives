@@ -44,7 +44,7 @@ public sealed class PlayController : ControllerBase
     public async Task<ActionResult<ICollection<Data.Play>>> Get()
     {
         var res = await _db.GetDbSet<Play>()
-            .OrderBy(x => x.UtcDate)
+            .OrderByDescending(x => x.UtcDate)
             .Include(x => x.Players).ThenInclude(x => x.Person)
             .Include(x => x.Players).ThenInclude(x => x.Faction)
             .Include(x => x.Players).ThenInclude(x => x.Colour)
@@ -60,13 +60,30 @@ public sealed class PlayController : ControllerBase
     public async Task<ActionResult<ICollection<Data.Play>>> GetWithPlayer(Guid personIdentifier)
     {
         var res = await _db.GetDbSet<Play>()
-            .OrderBy(x => x.UtcDate)
+            .OrderByDescending(x => x.UtcDate)
             .Include(x => x.Players).ThenInclude(x => x.Person)
             .Include(x => x.Players).ThenInclude(x => x.Faction)
             .Include(x => x.Players).ThenInclude(x => x.Colour)
             .Include(x => x.Variants)
             .Include(x => x.Expansions)
             .Where(x => x.Players.Any(y => y.Person.Identifier == personIdentifier))
+            .ToListAsync();
+        var mapped = _mapper.Map<ICollection<Data.Play>>(res);
+        return Ok(mapped);
+    }
+    
+    [HttpGet("faction={factionIdentifier}")]
+    [AllowAnonymous]
+    public async Task<ActionResult<ICollection<Data.Play>>> GetWithFaction(Guid factionIdentifier)
+    {
+        var res = await _db.GetDbSet<Play>()
+            .OrderByDescending(x => x.UtcDate)
+            .Include(x => x.Players).ThenInclude(x => x.Person)
+            .Include(x => x.Players).ThenInclude(x => x.Faction)
+            .Include(x => x.Players).ThenInclude(x => x.Colour)
+            .Include(x => x.Variants)
+            .Include(x => x.Expansions)
+            .Where(x => x.Players.Any(y => y.Faction.Identifier == factionIdentifier))
             .ToListAsync();
         var mapped = _mapper.Map<ICollection<Data.Play>>(res);
         return Ok(mapped);

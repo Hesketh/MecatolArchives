@@ -25,7 +25,12 @@ builder.Services.AddAuthentication("BasicAuthentication")
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var databaseMode = builder.Configuration.GetValue<string>("DatabaseMode");
-if (databaseMode == "sqlite")
+if (databaseMode == "memory")
+{
+    builder.Services.AddDbContext<MecatolArchivesDbContext>(options
+        => options.UseInMemoryDatabase(nameof(MecatolArchivesDbContext)));
+}
+else if (databaseMode == "sqlite")
 {
     builder.Services.AddDbContext<MecatolArchivesDbContext>(options
         => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -54,7 +59,10 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<MecatolArchivesDbContext>();
-    await db.Database.MigrateAsync();
+    if (db.Database.IsRelational() && !db.Database.IsInMemory())
+    {
+        await db.Database.MigrateAsync();
+    }
 }
 
 app.Run();
