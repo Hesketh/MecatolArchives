@@ -30,7 +30,8 @@ public sealed class StatsController : ControllerBase
 
         foreach (var play in _db.Plays.Include(x => x.Players)
                      .ThenInclude(x => x.Faction)
-                     .Include(x => x.Players).ThenInclude(x => x.Person))
+                     .Include(x => x.Players).ThenInclude(x => x.Person)
+                     .Where(x => x.Players.Any(y => y.Winner)))
         {
             foreach (var player in play.Players.Where(x => x.Person.Identifier == personIdentifier))
             {
@@ -72,7 +73,8 @@ public sealed class StatsController : ControllerBase
         }
 
         foreach (var play in _db.Plays.Include(x => x.Players)
-                     .ThenInclude(x => x.Faction))
+                     .ThenInclude(x => x.Faction)
+                     .Where(x => x.Players.Any(y => y.Winner)))
         {
             foreach (var player in play.Players)
             {
@@ -109,7 +111,8 @@ public sealed class StatsController : ControllerBase
 
         var statsLookup = new Dictionary<Guid, Statistic>();
         foreach (var play in _db.Plays.Include(x => x.Players)
-                     .ThenInclude(x => x.Person))
+                     .ThenInclude(x => x.Person)
+                     .Where(x => x.Players.Any(y => y.Winner)))
         {
             foreach (var player in play.Players)
             {
@@ -147,7 +150,8 @@ public sealed class StatsController : ControllerBase
         var statsLookup = new Dictionary<Guid, Statistic>();
         foreach (var play in _db.Plays.Include(x => x.Players)
                      .ThenInclude(x => x.Person)
-                     .Include(x => x.Players).ThenInclude(x => x.Faction))
+                     .Include(x => x.Players).ThenInclude(x => x.Faction)
+                     .Where(x => x.Players.Any(y => y.Winner)))
         {
             foreach (var player in play.Players.Where(x => x.Faction.Identifier == factionIdentifier))
             {
