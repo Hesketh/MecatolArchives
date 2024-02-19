@@ -33,12 +33,18 @@ if (databaseMode == "memory")
 else if (databaseMode == "sqlite")
 {
     builder.Services.AddDbContext<MecatolArchivesDbContext>(options
-        => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+        => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), b =>
+        {
+            b.MigrationsAssembly("DB.Migrations.Sqlite");
+        }));
 }
 else if (databaseMode == "mssql")
 {
     builder.Services.AddDbContext<MecatolArchivesDbContext>(options
-        => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), b =>
+        {
+            b.MigrationsAssembly("DB.Migrations.Mssql");
+        }));
 }
 
 var app = builder.Build();
