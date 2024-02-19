@@ -1,4 +1,5 @@
 using Hesketh.MecatolArchives.API.Auth;
+using Hesketh.MecatolArchives.API.Helpers;
 using Hesketh.MecatolArchives.DB;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
@@ -69,6 +70,12 @@ using (var scope = app.Services.CreateScope())
     {
         await db.Database.MigrateAsync();
     }
+    #if DEBUG
+    else if (db.Database.IsInMemory())
+    {
+        await DevelopmentDataSeedingHelper.Seed(db);
+    }
+    #endif
 }
 
 app.Run();
