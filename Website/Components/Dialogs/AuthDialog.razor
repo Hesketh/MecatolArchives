@@ -38,17 +38,14 @@
     private UserModel User { get; } = new();
     private MudTextField<string> UsernameTextField { get; set; } = null!;
 
-    protected override async Task OnParametersSetAsync()
-    {
-        var details = await Credentials.GetDetailsAsync();
-        User.Name = details.Username;
-        User.Password = details.Password;
-    }
-
     protected override async void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
+            var details = await Credentials.GetDetailsAsync();
+            User.Name = details.Username;
+            User.Password = details.Password;
+            
             await UsernameTextField.FocusAsync();
         }
     }

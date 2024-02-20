@@ -3,13 +3,12 @@
 @using Hesketh.MecatolArchives.API.Client.Auth
 @using Variant = Hesketh.MecatolArchives.API.Data.Variant
 @inject VariantClient VariantClient;
-@inject IAdminCredentialStore Admin
 @inject IDialogService DialogService
 
 <PageTitle>Variants</PageTitle>
 
 <MudDataGrid T="Variant" Items="@_variants"
-             ReadOnly="@_readOnly"
+             ReadOnly="@(!Authenticated)"
              EditMode="DataGridEditMode.Form"
              CommittedItemChanges="CommitItemChanges"
              EditTrigger="DataGridEditTrigger.Manual"
@@ -44,12 +43,11 @@
 {
     private MudDataGrid<Variant> _dataGrid = null!;
     private List<Variant> _variants = new();
-    private bool _readOnly = true;
+    [CascadingParameter] public bool Authenticated { get; set; } = false;
 
     protected override async Task OnParametersSetAsync()
     {
         _variants = new List<Variant>(await VariantClient.GetAsync());
-        _readOnly = !(await Admin.AreDetailsSet());
     }
 
     private async void Delete(Variant variant)

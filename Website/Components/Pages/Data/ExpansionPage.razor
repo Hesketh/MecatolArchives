@@ -3,13 +3,12 @@
 @using Hesketh.MecatolArchives.API.Data
 @using Hesketh.MecatolArchives.API.Client.Auth
 @inject ExpansionClient ExpansionClient;
-@inject IAdminCredentialStore Admin
 @inject IDialogService DialogService
 
 <PageTitle>Expansions</PageTitle>
 
 <MudDataGrid T="Expansion" Items="@_expansions"
-             ReadOnly="@_readOnly"
+             ReadOnly="@(!Authenticated)"
              EditMode="DataGridEditMode.Form"
              CommittedItemChanges="CommitItemChanges"
              EditTrigger="DataGridEditTrigger.Manual"
@@ -44,11 +43,10 @@
 {
     private MudDataGrid<Expansion> _dataGrid = null!;
     private List<Expansion> _expansions = new();
-    private bool _readOnly = true;
+    [CascadingParameter] public bool Authenticated { get; set; } = false;
     
     protected override async Task OnParametersSetAsync()
     {
-        _readOnly = !(await Admin.AreDetailsSet());
         _expansions = new List<Expansion>(await ExpansionClient.GetAsync());
     }
 

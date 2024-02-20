@@ -34,7 +34,7 @@
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" 
                        Color="Color.Inherit"
                        Href="https://github.com/Hesketh/MecatolArchives/"/>
-        @if (_authenticated)
+        @if (Authenticated)
         {
             <MudIconButton Icon="@Icons.Material.Filled.Logout"
                            OnClick="@OnLogoutClicked"
@@ -61,17 +61,19 @@
         <NavMenu/>
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
-            @Body
-        </MudContainer>
+        <CascadingValue Value="@Authenticated">
+            <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+                @Body
+            </MudContainer>
+        </CascadingValue>
     </MudMainContent>
 </MudLayout>
 
 @code {
     private bool _drawerOpen;
     private bool _darkMode = true;
-    private bool _authenticated;
-
+    public bool Authenticated { get; set; } = false;
+    
     public bool DrawerOpen
     {
         get => _drawerOpen;
@@ -98,7 +100,7 @@
         {
             DrawerOpen = await Preferences.GetPreferenceAsync(nameof(DrawerOpen), DrawerOpen);
             DarkMode = await Preferences.GetPreferenceAsync(nameof(DarkMode), DarkMode);       
-            _authenticated = await Admin.AreDetailsSet();
+            Authenticated = await Admin.AreDetailsSet();
         }
     }
 
@@ -113,8 +115,8 @@
         var result = await dialog.Result;
         if (result.Canceled)
             return;
-
-        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        
+        StateHasChanged();
     }
 
     private async void OnLogoutClicked()
@@ -124,7 +126,8 @@
             return;
 
         await Admin.ResetAsync();
-
-        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        Authenticated = false;
+        
+        StateHasChanged();
     }
 }

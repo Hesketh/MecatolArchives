@@ -5,7 +5,6 @@
 @using Hesketh.MecatolArchives.Website.Components.Dialogs
 @using Hesketh.MecatolArchives.Website.Components.Controls
 @inject PlayClient PlayClient
-@inject IAdminCredentialStore Admin
 @inject IDialogService DialogService
 
 <PageTitle>Games</PageTitle>
@@ -14,13 +13,13 @@
     <MudCardHeader>
         <MudText Typo="Typo.h4" Style="margin: 16px">Games</MudText>
         <MudSpacer />
-        @if (_authenticated)
+        @if (Authenticated)
         {
             <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateGameButtonClicked" />
         }
     </MudCardHeader>
     <MudCardContent>
-        <PlayHistory ReadOnly="@(!_authenticated)" Plays="@_plays"
+        <PlayHistory ReadOnly="@(!Authenticated)" Plays="@_plays"
                      EditPlayPressedAction="@EditGameButtonClicked"
                      DeletePlayPressedAction="@DeleteGameButtonClicked"/>
     </MudCardContent>
@@ -28,12 +27,11 @@
 
 @code
 {
+    [CascadingParameter] public bool Authenticated { get; set; } = false;
     private List<Play> _plays = new();
-    private bool _authenticated;
 
     protected override async Task OnParametersSetAsync()
     {
-        _authenticated = await Admin.AreDetailsSet();
         await RefreshPlays();
     }
 

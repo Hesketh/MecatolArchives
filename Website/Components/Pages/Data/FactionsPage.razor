@@ -3,14 +3,13 @@
 @using Hesketh.MecatolArchives.API.Data
 @using Hesketh.MecatolArchives.API.Client.Auth
 @using Hesketh.MecatolArchives.Website.Helpers
-@inject FactionClient FactionClient;
-@inject IAdminCredentialStore Admin
+@inject FactionClient FactionClient
 @inject IDialogService DialogService
 
 <PageTitle>Factions</PageTitle>
 
 <MudDataGrid T="Faction" Items="@_factions"
-             ReadOnly="@_readOnly"
+             ReadOnly="@(!Authenticated)"
              EditMode="DataGridEditMode.Form"
              CommittedItemChanges="CommitItemChanges"
              EditTrigger="DataGridEditTrigger.Manual"
@@ -61,11 +60,10 @@
 {
     private MudDataGrid<Faction> _dataGrid = null!;
     private List<Faction> _factions = new();
-    private bool _readOnly = true;
+    [CascadingParameter] public bool Authenticated { get; set; } = false;
     
     protected override async Task OnParametersSetAsync()
     {
-        _readOnly = !(await Admin.AreDetailsSet());
         _factions = new List<Faction>(await FactionClient.GetAsync());
     }
 
