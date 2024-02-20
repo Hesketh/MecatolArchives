@@ -136,7 +136,7 @@
 @code
 {
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = null!;
-    [Parameter] public Play? ExistingPlay { get; set; } = null;
+    [Parameter] public Play? ExistingPlay { get; set; }
     
     private PlayModel _play = new();
 
@@ -306,7 +306,7 @@
         public DateTime? UtcDate { get; set; } = DateTime.UtcNow;
         public double RulesVersion { get; set; } = 1.0;
         public uint PointGoal { get; set; } = 10;
-        public string? Map { get; set; } = null;
+        public string? Map { get; set; }
 
         public IEnumerable<Variant> Variants { get; set; } = new HashSet<Variant>();
         public IEnumerable<Expansion> Expansions { get; set; } = new HashSet<Expansion>();
@@ -326,9 +326,9 @@
 
     private sealed class PlayerModel
     {
-        public uint Points { get; set; } = 0;
-        public bool Winner { get; set; } = false;
-        public bool Eliminated { get; set; } = false;
+        public uint Points { get; set; }
+        public bool Winner { get; set; }
+        public bool Eliminated { get; set; }
 
         public Person? Person { get; set; }
         public Faction? Faction { get; set; }

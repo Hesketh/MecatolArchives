@@ -37,13 +37,13 @@
         @if (_authenticated)
         {
             <MudIconButton Icon="@Icons.Material.Filled.Logout"
-                           OnClick="OnLogoutClicked"
+                           OnClick="@OnLogoutClicked"
                            Color="Color.Inherit" />
         }
         else
         {
             <MudIconButton Icon="@Icons.Material.Filled.AdminPanelSettings"
-                           OnClick="OnAuthenticateClicked"
+                           OnClick="@OnAuthenticateClicked"
                            Color="Color.Inherit" />
         }
         <MudToggleIconButton @bind-Toggled="DarkMode"
@@ -52,7 +52,7 @@
                              Color="Color.Inherit"
                              ToggledColor="Color.Inherit"
                              Edge="Edge.Start"
-                             Style="margin-left: 0px"/>
+                             Style="margin-left: 0"/>
     </MudAppBar>
     <MudDrawer @bind-Open="DrawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always">
         <MudDrawerHeader>
@@ -70,7 +70,7 @@
 @code {
     private bool _drawerOpen;
     private bool _darkMode = true;
-    private bool _authenticated = false;
+    private bool _authenticated;
 
     public bool DrawerOpen
     {

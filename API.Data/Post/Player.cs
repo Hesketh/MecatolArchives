@@ -14,9 +14,9 @@ public sealed class Player
         ColourIdentifier = model.Colour.Identifier;
     }
 
-    public uint Points { get; set; } = 0;
-    public bool Winner { get; set; } = false;
-    public bool Eliminated { get; set; } = false;
+    public uint Points { get; set; }
+    public bool Winner { get; set; }
+    public bool Eliminated { get; set; }
 
     public Guid PersonIdentifier { get; set; }
     public Guid FactionIdentifier { get; set; }

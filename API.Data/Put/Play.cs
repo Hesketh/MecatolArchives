@@ -22,7 +22,7 @@ public sealed class Play : IEntity
     public DateTime UtcDate { get; set; } = DateTime.Now;
     public double RulesVersion { get; set; } = 1.0;
     public uint PointGoal { get; set; } = 10;
-    public string? Map { get; set; } = null;
+    public string? Map { get; set; }
 
     public ICollection<Guid> VariantIdentifiers { get; set; } = new HashSet<Guid>();
     public ICollection<Guid> ExpansionIdentifiers { get; set; } = new HashSet<Guid>();
