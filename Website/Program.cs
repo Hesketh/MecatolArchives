@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Hesketh.MecatolArchives.API.Client.Auth;
 using Hesketh.MecatolArchives.API.Client.Extensions;
 using Hesketh.MecatolArchives.Website.Components;
 using Hesketh.MecatolArchives.Website.Services;
@@ -16,6 +17,7 @@ builder.Services.AddTransient<IPreferenceStore, CookiePreferenceStore>();
 var apiUrl = builder.Configuration.GetValue<string>("APIUrl");
 if (string.IsNullOrEmpty(apiUrl))
     throw new InvalidOperationException("No APIUrl was specified");
+builder.Services.AddTransient<IAdminCredentialStore, PreferenceCredentialStore>();
 builder.Services.AddClients(new Uri(apiUrl));
 
 var app = builder.Build();
