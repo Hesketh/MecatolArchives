@@ -10,7 +10,7 @@
 <PageTitle>Factions</PageTitle>
 
 <MudDataGrid T="Faction" Items="@_factions"
-             ReadOnly="@(!Admin.Set)"
+             ReadOnly="@_readOnly"
              EditMode="DataGridEditMode.Form"
              CommittedItemChanges="CommitItemChanges"
              EditTrigger="DataGridEditTrigger.Manual"
@@ -61,9 +61,11 @@
 {
     private MudDataGrid<Faction> _dataGrid = null!;
     private List<Faction> _factions = new();
-
+    private bool _readOnly = true;
+    
     protected override async Task OnParametersSetAsync()
     {
+        _readOnly = !(await Admin.AreDetailsSet());
         _factions = new List<Faction>(await FactionClient.GetAsync());
     }
 

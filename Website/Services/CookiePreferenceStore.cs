@@ -11,28 +11,15 @@ public class CookiePreferenceStore : IPreferenceStore
         _localStorageService = localStorageService;
     }
 
-    public T GetPreference<T>(string key, T defaultValue)
-    {
-        var task = GetPreferenceAsync(key, defaultValue);
-        task.RunSynchronously();
-        return task.Result;
-    }
-
-    public void SetPreference<T>(string key, T value)
-    {
-        var task = SetPreferenceAsync(key, value);
-        task.RunSynchronously();
-    }
-
     public async Task<T> GetPreferenceAsync<T>(string key, T defaultValue)
     {
-        return await _localStorageService.ContainKeyAsync(key)
-            ? await _localStorageService.GetItemAsync<T>(key) ?? defaultValue
+        return await _localStorageService.ContainKeyAsync(key).ConfigureAwait(false)
+            ? await _localStorageService.GetItemAsync<T>(key).ConfigureAwait(false) ?? defaultValue
             : defaultValue;
     }
 
     public async Task SetPreferenceAsync<T>(string key, T value)
     {
-        await _localStorageService.SetItemAsync(key, value);
+        await _localStorageService.SetItemAsync(key, value).ConfigureAwait(false);
     }
 }

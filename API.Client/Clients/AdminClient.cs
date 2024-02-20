@@ -12,7 +12,7 @@ public sealed class AdminClient : Client
     public async Task<bool> Confirm()
     {
         using var requestMessage = new HttpRequestMessage(HttpMethod.Get, "admin");
-        requestMessage.Headers.Authorization = AuthHeaderProvider.GetHeader();
+        requestMessage.Headers.Authorization = await AuthHeaderProvider.GetHeaderAsync();
 
         using var response = await HttpClient.SendAsync(requestMessage);
         response.EnsureSuccessStatusCode();

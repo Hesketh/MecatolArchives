@@ -9,7 +9,7 @@
 <PageTitle>People</PageTitle>
 
 <MudDataGrid T="Person" Items="@_people"
-             ReadOnly="@(!Admin.Set)"
+             ReadOnly="@_readOnly"
              EditMode="DataGridEditMode.Form"
              CommittedItemChanges="CommitItemChanges"
              EditTrigger="DataGridEditTrigger.Manual"
@@ -44,9 +44,11 @@
 {
     private MudDataGrid<Person> _dataGrid = null!;
     private List<Person> _people = new();
-
+    private bool _readOnly = true;
+    
     protected override async Task OnParametersSetAsync()
     {
+        _readOnly = !(await Admin.AreDetailsSet());
         _people = new List<Person>(await PersonClient.GetAsync());
     }
 

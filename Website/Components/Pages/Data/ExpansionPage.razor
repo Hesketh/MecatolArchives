@@ -9,7 +9,7 @@
 <PageTitle>Expansions</PageTitle>
 
 <MudDataGrid T="Expansion" Items="@_expansions"
-             ReadOnly="@(!Admin.Set)"
+             ReadOnly="@_readOnly"
              EditMode="DataGridEditMode.Form"
              CommittedItemChanges="CommitItemChanges"
              EditTrigger="DataGridEditTrigger.Manual"
@@ -44,9 +44,11 @@
 {
     private MudDataGrid<Expansion> _dataGrid = null!;
     private List<Expansion> _expansions = new();
-
+    private bool _readOnly = true;
+    
     protected override async Task OnParametersSetAsync()
     {
+        _readOnly = !(await Admin.AreDetailsSet());
         _expansions = new List<Expansion>(await ExpansionClient.GetAsync());
     }
 

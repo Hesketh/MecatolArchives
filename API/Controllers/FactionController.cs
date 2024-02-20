@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using Hesketh.MecatolArchives.API.Data;
 using Hesketh.MecatolArchives.API.Helpers;
 using Hesketh.MecatolArchives.DB;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Faction = Hesketh.MecatolArchives.DB.Models.Faction;
 
 namespace Hesketh.MecatolArchives.API.Controllers;

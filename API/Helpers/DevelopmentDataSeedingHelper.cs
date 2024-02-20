@@ -1,5 +1,4 @@
 using Hesketh.MecatolArchives.DB;
-using Microsoft.EntityFrameworkCore;
 
 namespace Hesketh.MecatolArchives.API.Helpers;
 

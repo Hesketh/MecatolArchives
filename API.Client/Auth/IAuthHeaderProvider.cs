@@ -4,5 +4,5 @@ namespace Hesketh.MecatolArchives.API.Client.Auth;
 
 public interface IAuthHeaderProvider
 {
-    AuthenticationHeaderValue GetHeader();
+    Task<AuthenticationHeaderValue> GetHeaderAsync();
 }

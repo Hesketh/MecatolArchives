@@ -34,7 +34,7 @@
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" 
                        Color="Color.Inherit"
                        Href="https://github.com/Hesketh/MecatolArchives/"/>
-        @if (Admin.Set)
+        @if (_authenticated)
         {
             <MudIconButton Icon="@Icons.Material.Filled.Logout"
                            OnClick="OnLogoutClicked"
@@ -70,6 +70,7 @@
 @code {
     private bool _drawerOpen;
     private bool _darkMode = true;
+    private bool _authenticated = false;
 
     public bool DrawerOpen
     {
@@ -96,7 +97,8 @@
         if (firstRender)
         {
             DrawerOpen = await Preferences.GetPreferenceAsync(nameof(DrawerOpen), DrawerOpen);
-            DarkMode = await Preferences.GetPreferenceAsync(nameof(DarkMode), DarkMode);
+            DarkMode = await Preferences.GetPreferenceAsync(nameof(DarkMode), DarkMode);       
+            _authenticated = await Admin.AreDetailsSet();
         }
     }
 
@@ -121,8 +123,7 @@
         if (dialog != true)
             return;
 
-        Admin.Username = string.Empty;
-        Admin.Password = string.Empty;
+        await Admin.ResetAsync();
 
         NavigationManager.NavigateTo(NavigationManager.Uri, true);
     }

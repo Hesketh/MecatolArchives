@@ -3,7 +3,6 @@
 @using Hesketh.MecatolArchives.API.Data
 @using Hesketh.MecatolArchives.API.Client.Auth
 @using Hesketh.MecatolArchives.Website.Helpers
-@using Microsoft.AspNetCore.Components
 @inject ColourClient ColourClient;
 @inject IAdminCredentialStore Admin
 @inject IDialogService DialogService
@@ -11,7 +10,7 @@
 <PageTitle>Colours</PageTitle>
 
 <MudDataGrid T="Colour" Items="@_colours"
-             ReadOnly="@(!Admin.Set)"
+             ReadOnly="@_readOnly"
              EditMode="DataGridEditMode.Form"
              CommittedItemChanges="CommitItemChanges"
              EditTrigger="DataGridEditTrigger.Manual"
@@ -55,9 +54,11 @@
 {
     private MudDataGrid<Colour> _dataGrid = null!;
     private List<Colour> _colours = new();
+    private bool _readOnly = true;
 
     protected override async Task OnParametersSetAsync()
     {
+        _readOnly = !(await Admin.AreDetailsSet());
         _colours = new List<Colour>(await ColourClient.GetAsync());
     }
 

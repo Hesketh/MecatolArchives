@@ -18,7 +18,7 @@ public abstract class Client
     protected async Task<TTransfer> PostAsync<TTransfer, TPost>(string endpoint, TPost entity) where TTransfer : IEntity
     {
         using var requestMessage = new HttpRequestMessage(HttpMethod.Post, endpoint);
-        requestMessage.Headers.Authorization = AuthHeaderProvider.GetHeader();
+        requestMessage.Headers.Authorization = await AuthHeaderProvider.GetHeaderAsync();
         requestMessage.Content = JsonContent.Create(entity);
 
         using var response = await HttpClient.SendAsync(requestMessage);
@@ -33,7 +33,7 @@ public abstract class Client
     protected async Task PostAsync<TPostType>(string endpoint, TPostType content)
     {
         using var requestMessage = new HttpRequestMessage(HttpMethod.Post, endpoint);
-        requestMessage.Headers.Authorization = AuthHeaderProvider.GetHeader();
+        requestMessage.Headers.Authorization = await AuthHeaderProvider.GetHeaderAsync();
         requestMessage.Content = JsonContent.Create(content);
 
         using var response = await HttpClient.SendAsync(requestMessage);
@@ -45,7 +45,7 @@ public abstract class Client
         where TPut : IEntity
     {
         using var requestMessage = new HttpRequestMessage(HttpMethod.Put, endpoint);
-        requestMessage.Headers.Authorization = AuthHeaderProvider.GetHeader();
+        requestMessage.Headers.Authorization = await AuthHeaderProvider.GetHeaderAsync();
         requestMessage.Content = JsonContent.Create(entity);
 
         using var response = await HttpClient.SendAsync(requestMessage);
@@ -60,7 +60,7 @@ public abstract class Client
     protected async Task DeleteAsync(string endpoint)
     {
         using var requestMessage = new HttpRequestMessage(HttpMethod.Delete, endpoint);
-        requestMessage.Headers.Authorization = AuthHeaderProvider.GetHeader();
+        requestMessage.Headers.Authorization = await AuthHeaderProvider.GetHeaderAsync();
 
         using var response = await HttpClient.SendAsync(requestMessage);
         response.EnsureSuccessStatusCode();

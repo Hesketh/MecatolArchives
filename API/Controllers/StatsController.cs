@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Hesketh.MecatolArchives.API.Data;
+﻿using Hesketh.MecatolArchives.API.Data;
 using Hesketh.MecatolArchives.DB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

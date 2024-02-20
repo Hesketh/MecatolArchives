@@ -9,7 +9,7 @@
 <PageTitle>Variants</PageTitle>
 
 <MudDataGrid T="Variant" Items="@_variants"
-             ReadOnly="@(!Admin.Set)"
+             ReadOnly="@_readOnly"
              EditMode="DataGridEditMode.Form"
              CommittedItemChanges="CommitItemChanges"
              EditTrigger="DataGridEditTrigger.Manual"
@@ -44,10 +44,12 @@
 {
     private MudDataGrid<Variant> _dataGrid = null!;
     private List<Variant> _variants = new();
+    private bool _readOnly = true;
 
     protected override async Task OnParametersSetAsync()
     {
         _variants = new List<Variant>(await VariantClient.GetAsync());
+        _readOnly = !(await Admin.AreDetailsSet());
     }
 
     private async void Delete(Variant variant)

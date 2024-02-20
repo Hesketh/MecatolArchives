@@ -2,7 +2,8 @@
 
 public interface IAdminCredentialStore
 {
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public bool Set => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
+    Task SetDetailsAsync(string username, string password);
+    Task<(string Username, string Password)> GetDetailsAsync();
+    Task<bool> AreDetailsSet();
+    Task ResetAsync();
 }

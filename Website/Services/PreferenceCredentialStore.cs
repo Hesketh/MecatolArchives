@@ -4,15 +4,42 @@ namespace Hesketh.MecatolArchives.Website.Services;
 
 public class PreferenceCredentialStore(IPreferenceStore preferenceStore) : IAdminCredentialStore
 {
-    public string Username
-    {
-        get => preferenceStore.GetPreference(nameof(Username), string.Empty);
-        set => preferenceStore.SetPreference(nameof(Username), value);
-    }
+    private const string UsernamePreference = "Username";
+    private const string PasswordPreference = "Password";
     
-    public string Password
+    public async Task SetDetailsAsync(string username, string password)
     {
-        get => preferenceStore.GetPreference(nameof(Password), string.Empty);
-        set => preferenceStore.SetPreference(nameof(Password), value);
+        await preferenceStore.SetPreferenceAsync(UsernamePreference, username).ConfigureAwait(false);
+        await preferenceStore.SetPreferenceAsync(PasswordPreference, password).ConfigureAwait(false);
+    }
+
+    public async Task<(string Username, string Password)> GetDetailsAsync()
+    {
+        var username = await preferenceStore.GetPreferenceAsync(UsernamePreference, string.Empty).ConfigureAwait(false);
+        var password = await preferenceStore.GetPreferenceAsync(PasswordPreference, string.Empty).ConfigureAwait(false);
+
+        return (username, password);
+    }
+
+    public async Task<bool> AreDetailsSet()
+    {
+        var details = await GetDetailsAsync();
+        return !string.IsNullOrEmpty(details.Password) && !string.IsNullOrEmpty(details.Username);
+    }
+
+    public async Task ResetAsync()
+    {
+        await SetDetailsAsync(string.Empty, string.Empty);
+    }
+
+    public bool IsSet
+    {
+        get
+        {
+            var task = Task.Run(() => preferenceStore.GetPreferenceAsync(UsernamePreference, string.Empty));
+            task.ConfigureAwait(false);
+            task.RunSynchronously();
+            return !string.IsNullOrEmpty(task.Result);
+        }
     }
 }
