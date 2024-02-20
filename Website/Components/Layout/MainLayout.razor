@@ -101,6 +101,8 @@
             DrawerOpen = await Preferences.GetPreferenceAsync(nameof(DrawerOpen), DrawerOpen);
             DarkMode = await Preferences.GetPreferenceAsync(nameof(DarkMode), DarkMode);       
             Authenticated = await Admin.AreDetailsSet();
+            
+            StateHasChanged();
         }
     }
 
@@ -115,7 +117,8 @@
         var result = await dialog.Result;
         if (result.Canceled)
             return;
-        
+
+        Authenticated = await Admin.AreDetailsSet();
         StateHasChanged();
     }
 
