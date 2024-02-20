@@ -1,0 +1,136 @@
+﻿@using Hesketh.MecatolArchives.Website.Services
+@using System.Runtime.CompilerServices
+@using Hesketh.MecatolArchives.API.Client.Auth
+@using Hesketh.MecatolArchives.Website.Components.Dialogs
+@inherits LayoutComponentBase
+@inject IPreferenceStore Preferences
+@inject IDialogService DialogService
+@inject IAdminCredentialStore Admin
+@inject NavigationManager NavigationManager
+
+<link href="app.css" rel="stylesheet" />
+
+@* Nebula Background *@
+<link href="nebula.css" rel="stylesheet" />
+<div class="o o2"></div>
+<div class="o o3"></div>
+<div class="o o4"></div>
+
+<ThemeProvider DarkMode="@DarkMode" />
+<MudProviders />
+
+<PageTitle>Mecatol Archives</PageTitle>
+
+<MudLayout>
+    <MudAppBar Elevation="0">
+        <MudToggleIconButton @bind-Toggled="DrawerOpen"
+                             Icon="@Icons.Material.Filled.Menu"
+                             ToggledIcon="@Icons.Material.Filled.MenuOpen"
+                             Color="Color.Inherit"
+                             ToggledColor="Color.Inherit"
+                             Edge="Edge.Start" />
+        <MudText Typo="Typo.h6" Class="ti-logo-text">MECATOL ARCHIVES</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" 
+                       Color="Color.Inherit"
+                       Href="https://github.com/Hesketh/MecatolArchives/"/>
+        @if (Authenticated)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Logout"
+                           OnClick="@OnLogoutClicked"
+                           Color="Color.Inherit" />
+        }
+        else
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.AdminPanelSettings"
+                           OnClick="@OnAuthenticateClicked"
+                           Color="Color.Inherit" />
+        }
+        <MudToggleIconButton @bind-Toggled="DarkMode"
+                             Icon="@Icons.Material.Filled.LightMode"
+                             ToggledIcon="@Icons.Material.Filled.DarkMode"
+                             Color="Color.Inherit"
+                             ToggledColor="Color.Inherit"
+                             Edge="Edge.Start"
+                             Style="margin-left: 0"/>
+    </MudAppBar>
+    <MudDrawer @bind-Open="DrawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">MECATOL ARCHIVES</MudText>
+        </MudDrawerHeader>
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        <CascadingValue Value="@Authenticated">
+            <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+                @Body
+            </MudContainer>
+        </CascadingValue>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _drawerOpen;
+    private bool _darkMode = true;
+    public bool Authenticated { get; set; } = false;
+    
+    public bool DrawerOpen
+    {
+        get => _drawerOpen;
+        set
+        {
+            _drawerOpen = value;
+            UpdateBoolPreference(value);
+        }
+    }
+
+    public bool DarkMode
+    {
+        get => _darkMode;
+        set
+        {
+            _darkMode = value;
+            UpdateBoolPreference(value);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            DrawerOpen = await Preferences.GetPreferenceAsync(nameof(DrawerOpen), DrawerOpen);
+            DarkMode = await Preferences.GetPreferenceAsync(nameof(DarkMode), DarkMode);       
+            Authenticated = await Admin.AreDetailsSet();
+            
+            StateHasChanged();
+        }
+    }
+
+    private async void UpdateBoolPreference(bool value, [CallerMemberName] string propertyName = "")
+    {
+        await Preferences.SetPreferenceAsync(propertyName, value);
+    }
+
+    private async void OnAuthenticateClicked()
+    {
+        var dialog = await DialogService.ShowAsync<AuthDialog>();
+        var result = await dialog.Result;
+        if (result.Canceled)
+            return;
+
+        Authenticated = await Admin.AreDetailsSet();
+        StateHasChanged();
+    }
+
+    private async void OnLogoutClicked()
+    {
+        var dialog = await DialogService.ShowMessageBox("Logout", "Are you sure you want to logout?", "Yes", "No");
+        if (dialog != true)
+            return;
+
+        await Admin.ResetAsync();
+        Authenticated = false;
+        
+        StateHasChanged();
+    }
+}

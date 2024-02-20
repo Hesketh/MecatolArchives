@@ -1,0 +1,43 @@
+﻿@using Hesketh.MecatolArchives.API.Data
+@using Hesketh.MecatolArchives.Website.Helpers
+
+@if (Context != null)
+{
+    <MudTd DataLabel="Name">
+        @if (CanNavigate(Context.LinkedIdentifier))
+        {
+            <div class="d-flex align-center">
+                @GetCustomNamePrefixFragment?.Invoke(Context)
+                <MudNavLink Style="display: inline-block; text-align: center;"
+                         Href="@GetNavigationUrl(Context.LinkedIdentifier!.Value)"
+                         Color="Color.Primary">@Context.Name</MudNavLink>
+            </div>
+        }
+        else
+        {
+            @Context.Name
+        }
+    </MudTd>
+    <MudTd Style="text-align:center;" DataLabel="Played">@Context.Plays</MudTd>
+    <MudTd Style="text-align:center;" DataLabel="Wins">@Context.Wins</MudTd>
+    <MudTd Style="text-align:center;" DataLabel="Losses">@Context.Losses</MudTd>
+    <MudTd Style="text-align:center;" DataLabel="Win %">@(Context.WinPercentage.ToString("0.0"))%</MudTd>
+    <MudTd Style="text-align:center;" DataLabel="VP %">@(Context.PointPercentage.ToString("0.0"))%</MudTd>
+}
+
+@code 
+{
+    [Parameter] public Statistic? Context { get; set; } = null;
+    [Parameter] public string? NavigationFormat { get; set; } = null;
+    [Parameter] public Func<object, RenderFragment?>? GetCustomNamePrefixFragment { get; set; } = null;
+
+    public string GetNavigationUrl(Guid linkedIdentifier)
+    {
+        return string.Format(NavigationFormat!, linkedIdentifier);
+    }
+
+    public bool CanNavigate(Guid? linkedIdentifier)
+    {
+        return linkedIdentifier != null && !string.IsNullOrEmpty(NavigationFormat);
+    }
+}

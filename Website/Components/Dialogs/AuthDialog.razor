@@ -1,0 +1,90 @@
+﻿@using Hesketh.MecatolArchives.API.Client.Auth
+@using Hesketh.MecatolArchives.API.Client.Clients
+@using System.ComponentModel.DataAnnotations
+@inject IAdminCredentialStore Credentials 
+@inject IDialogService DialogService
+@inject AdminClient AdminClient
+
+<EditForm Model="@User"
+          OnValidSubmit="Submit">
+    <MudDialog>
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                Authentication
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudTextField @bind-Value="User.Name"
+                          Label="Username"
+                          For="() => User.Name"
+                          @ref="UsernameTextField"/>
+            <MudTextField @bind-Value="User.Password"
+                          Label="Password"
+                          For="() => User.Password"
+                          InputType="InputType.Password"/>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit">Confirm</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code
+{
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; } = null!;
+
+    private UserModel User { get; } = new();
+    private MudTextField<string> UsernameTextField { get; set; } = null!;
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var details = await Credentials.GetDetailsAsync();
+            User.Name = details.Username;
+            User.Password = details.Password;
+            
+            await UsernameTextField.FocusAsync();
+        }
+    }
+
+    private async void Submit()
+    {
+        await Credentials.SetDetailsAsync(User.Name, User.Password);
+
+        var valid = false;
+        try
+        {
+            valid = await AdminClient.Confirm();
+        }
+        catch
+        {
+            valid = false;
+        }
+
+        if (valid)
+        {
+            MudDialog.Close(DialogResult.Ok(User.Name));
+        }
+        else
+        {
+            await DialogService.ShowMessageBox("Invalid Login Attempt", "The credentials provided are not valid");
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private class UserModel
+    {
+        [Required]
+        public string Name { get; set; } = string.Empty;
+
+        [Required]
+        public string Password { get; set; } = string.Empty;
+    }
+}

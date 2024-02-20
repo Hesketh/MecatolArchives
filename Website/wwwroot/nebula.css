@@ -1,0 +1,97 @@
+﻿/* Stolen from https://codepen.io/matuzyaka/pen/VwZaORe */
+
+.o {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.o1 {
+    background: url(images/nebula/bg.png);
+    z-index: -10;
+}
+
+.o2 {
+    background: url(images/nebula/stars.png);
+    z-index: -9;
+    animation: 800s scroll infinite linear;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+}
+
+.o3 {
+    background: url(images/nebula/nebula.png);
+    z-index: -8;
+    animation: 800s scroll2 infinite linear;
+}
+
+.o4 {
+    background: url(images/nebula/clouds.png);
+    z-index: -8;
+    animation: 1600s scroll infinite linear;
+}
+
+@-webkit-keyframes scroll {
+    100% {
+        background-position: -3000px 0px;
+    }
+}
+
+@-moz-keyframes scroll {
+    100% {
+        background-position: -3000px 0px;
+    }
+}
+
+@-o-keyframes scroll {
+    100% {
+        background-position: -3000px 0px;
+    }
+}
+
+@-ms-keyframes scroll {
+    100% {
+        background-position: -3000px 0px;
+    }
+}
+
+@keyframes scroll {
+    100% {
+        background-position: -3000px 0px;
+    }
+}
+
+@-webkit-keyframes scroll2 {
+    100% {
+        background-position: -3000px 0px;
+    }
+}
+
+@-moz-keyframes scroll2 {
+    100% {
+        background-position: -3000px 0px;
+    }
+}
+
+@-o-keyframes scroll2 {
+    100% {
+        background-position: -3000px 0px;
+    }
+}
+
+@-ms-keyframes scroll2 {
+    100% {
+        background-position: -3000px 0px;
+    }
+}
+
+@keyframes scroll2 {
+    100% {
+        background-position: 3000px 0px;
+    }
+}

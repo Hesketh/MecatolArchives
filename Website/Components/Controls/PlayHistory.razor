@@ -1,0 +1,91 @@
+@using Bromix.MudBlazor.MaterialDesignIcons
+@using Hesketh.MecatolArchives.API.Client.Auth
+@using Hesketh.MecatolArchives.API.Data
+@using Hesketh.MecatolArchives.Website.Helpers
+
+<MudExpansionPanels MultiExpansion="true" DisableGutters="true" Elevation="0">
+    @foreach (var play in Plays)
+    {
+        <MudExpansionPanel IsInitiallyExpanded="@ShouldInitialExpand(play)">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudText>@play.UtcDate.ToLocalTime().ToLongDateString()</MudText>
+                    <MudSpacer />
+                    @if (!ReadOnly && EditPlayPressedAction != null)
+                    {
+                        <div class="d-flex align-center">
+                            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => DeletePlayPressedAction?.Invoke(play))" />
+                            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="@(() => EditPlayPressedAction?.Invoke(play))"/>
+                        </div>
+                    }
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudTable Items="@play.Players" Hover="true" Breakpoint="Breakpoint.None" Elevation="0" Style="margin: 16px">
+                    <HeaderContent>
+                        <MudTh>Player</MudTh>
+                        <MudTh>Faction</MudTh>
+                        <MudTh Style="text-align:end;">Victory Points</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Player">
+                            <div class="d-flex align-center">
+                                <MudAvatar Size="Size.Small" Style="@ColourStyleHelper.GetBackgroundStyle(context.Colour.Hex)">@context.Person.Initials</MudAvatar>
+                                <MudNavLink Style="display: inline-block; text-align: center;"
+                                            Href="@GetPersonLink(context.Person.Identifier)"
+                                            Color="Color.Primary">@context.Person.Name</MudNavLink>
+                            </div>
+                        </MudTd>
+                        <MudTd DataLabel="Faction">
+                            <div class="d-flex align-center">
+                                <MudImage Height="32" Width="32"
+                                          Src="@FactionIconHelper.GetFactionIcon(context.Faction.Name)"
+                                          Style="display: inline-block;" />
+                                <MudNavLink Style="display: inline-block; text-align: center;"
+                                            Href="@GetFactionLink(context.Faction.Identifier)"
+                                            Color="Color.Primary">@context.Faction.Name</MudNavLink>
+                            </div>
+                        </MudTd>
+                        <MudTd DataLabel="Victory Points" Style="text-align:end;">
+                            @if (context.Eliminated)
+                            {
+                                <MudIcon Icon="@MaterialDesignIcons.Normal.Skull" Color="Color.Default" Size="Size.Small" Style="vertical-align:text-bottom" />
+                            }
+                            else
+                            {
+                                @if (context.Winner)
+                                {
+                                    <MudIcon Icon="@MaterialDesignIcons.Normal.Crown" Size="Size.Small" Style="vertical-align:text-bottom; color: gold" />
+                                }
+                                @context.Points
+                            }
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </ChildContent>
+        </MudExpansionPanel>
+    }
+</MudExpansionPanels>
+
+@code
+{
+    [Parameter] public ICollection<Play> Plays { get; set; } = new List<Play>();
+    [Parameter] public bool ReadOnly { get; set; } = false;
+    [Parameter] public Action<Play>? EditPlayPressedAction { get; set; } = null;
+    [Parameter] public Action<Play>? DeletePlayPressedAction { get; set; } = null;
+    
+    private string GetFactionLink(Guid factionId)
+    {
+        return $"stats/factions/{factionId}";
+    }
+
+    private string GetPersonLink(Guid personId)
+    {
+        return $"stats/people/{personId}";
+    }
+    
+    private bool ShouldInitialExpand(Play play)
+    {
+        return Plays.FirstOrDefault() == play;
+    }
+}

@@ -1,0 +1,39 @@
+﻿@page "/stats/factions"
+@using Hesketh.MecatolArchives.API.Data
+@using Hesketh.MecatolArchives.API.Client.Clients
+@using Hesketh.MecatolArchives.Website.Components.Controls;
+@using Hesketh.MecatolArchives.Website.Helpers
+@inject StatisticClient StatisticClient
+
+<PageTitle>Factions</PageTitle>
+
+<MudCard>
+    <MudCardHeader>
+        <MudText Typo="Typo.h4" Style="margin: 16px">Factions</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <StatisticTable Statistics="@_statistics.Stats"
+                        NavigationFormat="stats/factions/{0}"
+                        GetCustomNamePrefixFragment="GetFactionIcon" />
+    </MudCardContent>
+</MudCard>
+
+@code
+{
+    private Statistics _statistics = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _statistics = await StatisticClient.GetFactionStatistics();
+        StateHasChanged();
+    }
+
+    private RenderFragment? GetFactionIcon(object o)
+    {
+        if (o is Statistic statistic)
+        {
+            return @<MudImage Width="32" Height="32" Src="@FactionIconHelper.GetFactionIcon(statistic.Name)" Style="display: inline-block;" />;
+        }
+        return null;
+    }
+}

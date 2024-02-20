@@ -1,0 +1,82 @@
+﻿@page "/games/history"
+@using Hesketh.MecatolArchives.API.Client.Clients
+@using Hesketh.MecatolArchives.API.Data
+@using Hesketh.MecatolArchives.API.Client.Auth
+@using Hesketh.MecatolArchives.Website.Components.Dialogs
+@using Hesketh.MecatolArchives.Website.Components.Controls
+@inject PlayClient PlayClient
+@inject IDialogService DialogService
+
+<PageTitle>Games</PageTitle>
+
+<MudCard>
+    <MudCardHeader>
+        <MudText Typo="Typo.h4" Style="margin: 16px">Games</MudText>
+        <MudSpacer />
+        @if (Authenticated)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateGameButtonClicked" />
+        }
+    </MudCardHeader>
+    <MudCardContent>
+        <PlayHistory ReadOnly="@(!Authenticated)" Plays="@_plays"
+                     EditPlayPressedAction="@EditGameButtonClicked"
+                     DeletePlayPressedAction="@DeleteGameButtonClicked"/>
+    </MudCardContent>
+</MudCard>
+
+@code
+{
+    [CascadingParameter] public bool Authenticated { get; set; } = false;
+    private List<Play> _plays = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await RefreshPlays();
+    }
+
+    private async Task RefreshPlays()
+    {
+        _plays = new List<Play>(await PlayClient.GetAsync());
+        StateHasChanged();
+    }
+
+    private async void CreateGameButtonClicked()
+    {
+        var res = await DialogService.ShowAsync<EditPlayDialog>("New Play", new DialogOptions
+            {
+                FullScreen = true,
+                CloseButton = true
+            });
+        await res.Result;
+
+        await RefreshPlays();
+    }
+
+    private async void DeleteGameButtonClicked(Play play)
+    {
+        var result = await DialogService.ShowMessageBox("Delete Game?", 
+            $"Are you sure you want to delete the game from {play.UtcDate.ToLocalTime().ToLongDateString()}?", 
+            "Delete", 
+            "Cancel");
+
+        if (result == true)
+        {
+            await PlayClient.DeleteAsync(play.Identifier);
+            await RefreshPlays();
+        }
+    }
+    
+    private async void EditGameButtonClicked(Play play)
+    {
+        var parameters = new DialogParameters<EditPlayDialog> { { x => x.ExistingPlay, play } };
+        var res = await DialogService.ShowAsync<EditPlayDialog>("Edit Play", parameters, new DialogOptions
+        {
+            FullScreen = true,
+            CloseButton = true,
+        });
+        await res.Result;
+
+        await RefreshPlays();
+    }
+}
