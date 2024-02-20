@@ -10,4 +10,6 @@ public class Variant : IEntity, INamed
     public Guid Identifier { get; set; }
 
     public string Name { get; set; } = null!;
+    
+    public virtual ICollection<Play> Plays { get; set; } = null!;
 }

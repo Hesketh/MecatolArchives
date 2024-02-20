@@ -22,6 +22,21 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Mssql.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ExpansionPlay", b =>
+                {
+                    b.Property<Guid>("ExpansionsIdentifier")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PlaysIdentifier")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ExpansionsIdentifier", "PlaysIdentifier");
+
+                    b.HasIndex("PlaysIdentifier");
+
+                    b.ToTable("ExpansionPlay");
+                });
+
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Colour", b =>
                 {
                     b.Property<Guid>("Identifier")
@@ -107,12 +122,7 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Mssql.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PlayIdentifier")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Identifier");
-
-                    b.HasIndex("PlayIdentifier");
 
                     b.ToTable("Expansions");
 
@@ -394,21 +404,39 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Mssql.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PlayIdentifier")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Identifier");
-
-                    b.HasIndex("PlayIdentifier");
 
                     b.ToTable("Variants");
                 });
 
-            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Expansion", b =>
+            modelBuilder.Entity("PlayVariant", b =>
                 {
+                    b.Property<Guid>("PlaysIdentifier")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("VariantsIdentifier")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PlaysIdentifier", "VariantsIdentifier");
+
+                    b.HasIndex("VariantsIdentifier");
+
+                    b.ToTable("PlayVariant");
+                });
+
+            modelBuilder.Entity("ExpansionPlay", b =>
+                {
+                    b.HasOne("Hesketh.MecatolArchives.DB.Models.Expansion", null)
+                        .WithMany()
+                        .HasForeignKey("ExpansionsIdentifier")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Hesketh.MecatolArchives.DB.Models.Play", null)
-                        .WithMany("Expansions")
-                        .HasForeignKey("PlayIdentifier");
+                        .WithMany()
+                        .HasForeignKey("PlaysIdentifier")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Player", b =>
@@ -446,20 +474,24 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Mssql.Migrations
                     b.Navigation("Play");
                 });
 
-            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Variant", b =>
+            modelBuilder.Entity("PlayVariant", b =>
                 {
                     b.HasOne("Hesketh.MecatolArchives.DB.Models.Play", null)
-                        .WithMany("Variants")
-                        .HasForeignKey("PlayIdentifier");
+                        .WithMany()
+                        .HasForeignKey("PlaysIdentifier")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hesketh.MecatolArchives.DB.Models.Variant", null)
+                        .WithMany()
+                        .HasForeignKey("VariantsIdentifier")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Play", b =>
                 {
-                    b.Navigation("Expansions");
-
                     b.Navigation("Players");
-
-                    b.Navigation("Variants");
                 });
 #pragma warning restore 612, 618
         }
