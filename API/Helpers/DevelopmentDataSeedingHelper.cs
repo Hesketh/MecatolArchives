@@ -114,7 +114,6 @@ public static class DevelopmentDataSeedingHelper
         }
         return res;
     }
-
     private static DateTime GetRandomUtcDate()
     {
         var modifier = Random.Next(-MaxDaysDifferenceInDate, MaxDaysDifferenceInDate);
@@ -141,6 +140,9 @@ public static class DevelopmentDataSeedingHelper
 
             var variant = GenerateVariant();
             await db.AddAsync(variant);
+            
+            var expansion = GenerateExpansion();
+            await db.AddAsync(expansion);
         }
         
         await db.SaveChangesAsync();
@@ -177,6 +179,15 @@ public static class DevelopmentDataSeedingHelper
     private static DBM.Variant GenerateVariant()
     {
         return new DBM.Variant
+        {
+            Identifier = Guid.NewGuid(),
+            Name = NounHelper.GetRandomNoun()
+        };
+    }
+    
+    private static DBM.Expansion GenerateExpansion()
+    {
+        return new DBM.Expansion
         {
             Identifier = Guid.NewGuid(),
             Name = NounHelper.GetRandomNoun()
