@@ -1,4 +1,4 @@
-name: ci
+name: docker-latest
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - 'main'
 
 jobs:
-  docker:
+  docker-latest:
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -20,6 +20,6 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Publish Website
-        run: dotnet publish Website/Website.csproj --os linux --arch x64 -c Release -p:PublishProfile=DefaultContainer -p:ContainerRegistry=${{ secrets.DOCKERREGISTRY }} -p:ContainerRepository=mecatol_archives_website
+        run: dotnet publish Website/Website.csproj --os linux --arch x64 -c Release -p:PublishProfile=DefaultContainer -p:ContainerRegistry=${{ secrets.DOCKERREGISTRY }} -p:ContainerRepository=mecatol_archives_website -p:ContainerImageTag=latest
       - name: Publish API
-        run: dotnet publish API/API.csproj --os linux --arch x64 -c Release -p:PublishProfile=DefaultContainer -p:ContainerRegistry=${{ secrets.DOCKERREGISTRY }} -p:ContainerRepository=mecatol_archives_api
+        run: dotnet publish API/API.csproj --os linux --arch x64 -c Release -p:PublishProfile=DefaultContainer -p:ContainerRegistry=${{ secrets.DOCKERREGISTRY }} -p:ContainerRepository=mecatol_archives_api -p:ContainerImageTag=latest
