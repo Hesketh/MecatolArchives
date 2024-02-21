@@ -3,6 +3,7 @@ using Hesketh.MecatolArchives.API.Client.Auth;
 using Hesketh.MecatolArchives.API.Client.Extensions;
 using Hesketh.MecatolArchives.Website.Components;
 using Hesketh.MecatolArchives.Website.Services;
+using Microsoft.AspNetCore.StaticFiles;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,11 @@ if (!app.Environment.IsDevelopment())
 if (app.Configuration.GetValue("Https", false))
     app.UseHttpsRedirection();
 
+var provider = new FileExtensionContentTypeProvider();
+provider.Mappings[".otf"] = "application/x-font-otf";
+provider.Mappings[".ttf"] = "font/ttf";
+
+app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = provider });
 app.UseStaticFiles();
 app.UseAntiforgery();
 
