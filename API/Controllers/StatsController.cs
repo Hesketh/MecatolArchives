@@ -20,9 +20,9 @@ public sealed class StatsController : ControllerBase
     public ActionResult<Statistics> GetPlayersFactions(Guid personIdentifier)
     {
         var overall = new Statistics();
-        
+
         var statsLookup = new Dictionary<Guid, Statistic>();
-        foreach (var faction in _db.Factions.Where(x => x.Name != MecatolArchivesDbContext.UnknownName))
+        foreach (var faction in _db.Factions)
         {
             statsLookup[faction.Identifier] = new Statistic(faction.Name, faction.Identifier);
         }
@@ -34,21 +34,18 @@ public sealed class StatsController : ControllerBase
         {
             foreach (var player in play.Players.Where(x => x.Person.Identifier == personIdentifier))
             {
-                if (!statsLookup.TryGetValue(player.Faction.Identifier, out var stats))
+                if (statsLookup.TryGetValue(player.Faction.Identifier, out var stats))
                 {
-                    stats = new Statistic(player.Faction.Name, player.Faction.Identifier);
-                    statsLookup[player.Faction.Identifier] = stats;
+                    stats.Plays += 1;
+
+                    if (player.Winner)
+                    {
+                        stats.Wins += 1;
+                    }
+
+                    var pointPercentage = (double)player.Points / play.PointGoal;
+                    stats.PointPercentSum += pointPercentage;
                 }
-
-                stats.Plays += 1;
-
-                if (player.Winner)
-                {
-                    stats.Wins += 1;
-                }
-
-                var pointPercentage = (double)player.Points / play.PointGoal;
-                stats.PointPercentSum += pointPercentage;
             }
         }
 
@@ -66,7 +63,7 @@ public sealed class StatsController : ControllerBase
         var overall = new Statistics();
 
         var statsLookup = new Dictionary<Guid, Statistic>();
-        foreach (var faction in _db.Factions.Where(x => x.Name != MecatolArchivesDbContext.UnknownName))
+        foreach (var faction in _db.Factions.Where(x => !x.HideFromStatistics))
         {
             statsLookup[faction.Identifier] = new Statistic(faction.Name, faction.Identifier);
         }
@@ -77,21 +74,18 @@ public sealed class StatsController : ControllerBase
         {
             foreach (var player in play.Players)
             {
-                if (!statsLookup.TryGetValue(player.Faction.Identifier, out var stats))
+                if (statsLookup.TryGetValue(player.Faction.Identifier, out var stats))
                 {
-                    stats = new Statistic(player.Faction.Name, player.Faction.Identifier);
-                    statsLookup[player.Faction.Identifier] = stats;
+                    stats.Plays += 1;
+
+                    if (player.Winner)
+                    {
+                        stats.Wins += 1;
+                    }
+
+                    var pointPercentage = (double)player.Points / play.PointGoal;
+                    stats.PointPercentSum += pointPercentage;
                 }
-
-                stats.Plays += 1;
-
-                if (player.Winner)
-                {
-                    stats.Wins += 1;
-                }
-
-                var pointPercentage = (double)player.Points / play.PointGoal;
-                stats.PointPercentSum += pointPercentage;
             }
         }
 
@@ -113,7 +107,7 @@ public sealed class StatsController : ControllerBase
                      .ThenInclude(x => x.Person)
                      .Where(x => x.Players.Any(y => y.Winner)))
         {
-            foreach (var player in play.Players)
+            foreach (var player in play.Players.Where(x => !x.Person.HideFromStatistics))
             {
                 if (!statsLookup.TryGetValue(player.Person.Identifier, out var stats))
                 {

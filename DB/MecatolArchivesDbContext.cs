@@ -208,7 +208,8 @@ public sealed class MecatolArchivesDbContext : DbContext
         }, new Faction
         {
             Identifier = Guid.Parse("609382d1-c969-4144-916a-ad4c13df1352"),
-            Name = UnknownName
+            Name = UnknownName,
+            HideFromStatistics = true,
         });
     }
 

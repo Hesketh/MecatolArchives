@@ -10,4 +10,7 @@ public class Person : IEntity, INamed
     public Guid Identifier { get; set; }
 
     public string Name { get; set; } = null!;
+    public bool HideFromStatistics { get; set; } = false;
+
+    public virtual Colour? DefaultColour { get; set; } = null;
 }

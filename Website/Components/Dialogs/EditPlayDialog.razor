@@ -74,6 +74,7 @@
                             <MudTh>Player</MudTh>
                             <MudTh>Colour</MudTh>
                             <MudTh>Faction</MudTh>
+                            <MudTh>Draft</MudTh>
                             <MudTh>Eliminated</MudTh>
                             <MudTh>Points</MudTh>
                             <MudTh>Winner</MudTh>
@@ -109,6 +110,9 @@
                                     }
                                 </MudSelect>
                             </MudTd>
+                            <MudTh>
+                                <MudNumericField T="uint" @bind-Value="playerContext.DraftOrder" Label="Draft"/>
+                            </MudTh>
                             <MudTd>
                                 <MudCheckBox T="bool" @bind-Value="playerContext.Eliminated" Label="Eliminated" />
                             </MudTd>
@@ -166,7 +170,8 @@
                     Faction = player.Faction,
                     Person = player.Person,
                     Points = player.Points,
-                    Winner = player.Winner
+                    Winner = player.Winner,
+                    DraftOrder = player.DraftOrder
                 });
         }
         
@@ -215,7 +220,8 @@
                         FactionIdentifier = x.Faction!.Identifier,
                         PersonIdentifier = x.Person!.Identifier,
                         Points = x.Points,
-                        Winner = x.Winner
+                        Winner = x.Winner,
+                        DraftOrder = x.DraftOrder
                     }).ToList(),
                     PointGoal = _play.PointGoal,
                     RulesVersion = _play.RulesVersion,
@@ -326,11 +332,25 @@
 
     private sealed class PlayerModel
     {
+        private Person? _person;
         public uint Points { get; set; }
         public bool Winner { get; set; }
         public bool Eliminated { get; set; }
+        public uint DraftOrder { get; set; }
 
-        public Person? Person { get; set; }
+        public Person? Person
+        {
+            get => _person;
+            set
+            {
+                _person = value;
+                if (_person?.DefaultColour != null)
+                {
+                    Colour = _person.DefaultColour;
+                }
+            }
+        }
+
         public Faction? Faction { get; set; }
         public Colour? Colour { get; set; }
 

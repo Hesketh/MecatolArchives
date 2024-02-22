@@ -8,12 +8,14 @@ public sealed class Player
         Points = model.Points;
         Winner = model.Winner;
         Eliminated = model.Eliminated;
-
+        DraftOrder = model.DraftOrder;
+        
         PersonIdentifier = model.Person.Identifier;
         FactionIdentifier = model.Faction.Identifier;
         ColourIdentifier = model.Colour.Identifier;
     }
 
+    public uint DraftOrder { get; set; }
     public uint Points { get; set; }
     public bool Winner { get; set; }
     public bool Eliminated { get; set; }
