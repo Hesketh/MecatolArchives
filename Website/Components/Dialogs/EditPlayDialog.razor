@@ -344,7 +344,7 @@
             set
             {
                 _person = value;
-                if (_person?.DefaultColour != null)
+                if (_person?.DefaultColour != null && Colour == null)
                 {
                     Colour = _person.DefaultColour;
                 }
