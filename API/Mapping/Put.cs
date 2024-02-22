@@ -8,5 +8,6 @@ public class Put : Profile
     public Put()
     {
         CreateMap<Play, DB.Models.Play>();
+        CreateMap<Person, DB.Models.Person>();
     }
 }

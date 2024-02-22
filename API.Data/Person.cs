@@ -5,6 +5,7 @@ namespace Hesketh.MecatolArchives.API.Data;
 public sealed class Person : IEntity
 {
     public string Name { get; set; } = null!;
+    public Colour? DefaultColour { get; set; } = null;
     public Guid Identifier { get; set; }
 
     public string Initials
