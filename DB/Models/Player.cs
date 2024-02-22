@@ -8,6 +8,7 @@ public class Player : IEntity
     public uint Points { get; set; } = 0;
     public bool Winner { get; set; } = false;
     public bool Eliminated { get; set; } = false;
+    public uint DraftOrder { get; set; } = 0;
 
     public virtual Person Person { get; set; } = null!;
     public virtual Play Play { get; set; } = null!;

@@ -4,6 +4,7 @@ using Hesketh.MecatolArchives.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hesketh.MecatolArchives.DB.Migrations.Mssql.Migrations
 {
     [DbContext(typeof(MecatolArchivesDbContext))]
-    partial class MecatolArchivesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240222134122_EnhancementHideDefaultDraft")]
+    partial class EnhancementHideDefaultDraft
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
