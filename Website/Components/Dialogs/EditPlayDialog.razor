@@ -272,12 +272,16 @@
 
     private void CreateNewPlayer()
     {
-        _play.Players.Add(new PlayerModel
+        var newPlayer = new PlayerModel
         {
-            Colour = Colours.FirstOrDefault(),
             Faction = Factions.FirstOrDefault(),
             Person = People.FirstOrDefault(x => _play.Players.All(y => x.Identifier != y.Person?.Identifier))
-        });
+        };
+        if (newPlayer.Colour == null)
+        {
+            newPlayer.Colour = Colours.FirstOrDefault();
+        }
+        _play.Players.Add(newPlayer);
         StateHasChanged();
     }
 
