@@ -2,8 +2,10 @@
 @using Hesketh.MecatolArchives.API.Client.Clients
 @using Hesketh.MecatolArchives.API.Data
 @using Hesketh.MecatolArchives.API.Client.Auth
+@using Hesketh.MecatolArchives.Website.Helpers
 @inject PersonClient PersonClient;
 @inject IDialogService DialogService
+@inject ColourClient ColourClient
 
 <PageTitle>People</PageTitle>
 
@@ -14,26 +16,43 @@
              EditTrigger="DataGridEditTrigger.Manual"
              @ref="_dataGrid">
     <ColGroup>
-        <col style="width: auto" />
+        <col style="width: auto"/>
         @if (!_dataGrid.ReadOnly)
         {
-            <col style="width: 100px" />
+            <col style="width: 100px"/>
         }
     </ColGroup>
     <ToolBarContent>
         <MudText Typo="Typo.h6">PEOPLE</MudText>
-        <MudSpacer />
+        <MudSpacer/>
         @if (!_dataGrid.ReadOnly)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateNew" />
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateNew"/>
         }
     </ToolBarContent>
     <Columns>
-        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.Name"/>
+        <PropertyColumn Property="x => x.HideFromStatistics"/>
+        <TemplateColumn Sortable="false">
+            <CellTemplate>
+                @if (context.Item.DefaultColour != null)
+                {
+                    <MudText Style="@ColourStyleHelper.GetUnderlineStyle(context.Item.DefaultColour.Hex)">@context.Item.DefaultColour.Name</MudText>
+                }
+            </CellTemplate>
+            <EditTemplate>
+                <MudSelect T="Colour" Label="Colour" @bind-Value="@context.Item.DefaultColour" ToStringFunc="ToStringFunc">
+                    @foreach (var colour in Colours)
+                    {
+                        <MudSelectItem T="Colour" Style="@ColourStyleHelper.GetUnderlineStyle(colour.Hex)" Value="@colour">@colour.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </EditTemplate>
+        </TemplateColumn>
         <TemplateColumn Hidden="@(_dataGrid.ReadOnly)" CellClass="d-flex justify-end" Sortable="false">
             <CellTemplate>
-                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Delete(context.Item))" />
-                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Delete(context.Item))"/>
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="@context.Actions.StartEditingItemAsync"/>
             </CellTemplate>
         </TemplateColumn>
     </Columns>
@@ -44,10 +63,16 @@
     private MudDataGrid<Person> _dataGrid = null!;
     private List<Person> _people = new();
     [CascadingParameter] public bool Authenticated { get; set; } = false;
-    
+    private ICollection<Colour> Colours { get; set; } = new List<Colour>();
+
     protected override async Task OnParametersSetAsync()
     {
         _people = new List<Person>(await PersonClient.GetAsync());
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Colours = new List<Colour>(await ColourClient.GetAsync());
     }
 
     private async void Delete(Person person)
@@ -72,18 +97,24 @@
     {
         if (person.Identifier != Guid.Empty)
         {
-            await PersonClient.UpdateAsync(person);
+            await PersonClient.UpdateAsync(new API.Data.Put.Person(person));
         }
         else
         {
             var result = await PersonClient.CreateAsync(new API.Data.Post.Person
-                {
-                    Name = person.Name
-                });
+            {
+                Name = person.Name,
+                HideFromStatistics = person.HideFromStatistics
+            });
             person.Identifier = result.Identifier;
             _people.Add(person);
         }
 
         StateHasChanged();
+    }
+    
+    private string ToStringFunc(Colour? arg)
+    {
+        return arg?.Name ?? string.Empty;
     }
 }

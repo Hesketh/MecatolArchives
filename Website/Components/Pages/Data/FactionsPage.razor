@@ -20,6 +20,8 @@
             <col style="width: 50px;"/>
         }
         <col style="width: auto"/>
+        <col style="width: auto"/>
+        <col style="width: auto"/>
         @if (!_dataGrid.ReadOnly)
         {
             <col style="width: 100px"/>
@@ -47,6 +49,8 @@
                 <MudTextField T="string" @bind-Value="@context.Item.Name"></MudTextField>
             </EditTemplate>
         </TemplateColumn>
+        <PropertyColumn Property="x => x.HideFromStatistics"/>
+        <PropertyColumn Property="x => x.Link" Required="false"/>
         <TemplateColumn Hidden="@(_dataGrid.ReadOnly)" CellClass="d-flex justify-end" Sortable="false">
             <CellTemplate>
                 <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Delete(context.Item))"/>
@@ -95,7 +99,8 @@
         {
             var result = await FactionClient.CreateAsync(new API.Data.Post.Faction
             {
-                Name = faction.Name
+                Name = faction.Name,
+                HideFromStatistics = faction.HideFromStatistics
             });
             faction.Identifier = result.Identifier;
             _factions.Add(faction);

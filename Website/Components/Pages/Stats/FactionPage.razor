@@ -18,6 +18,11 @@
             <MudText Style="display: inline-block; text-align: center;"
                      Typo="Typo.h4">@_title</MudText>
         </div>
+        @if (_link != null)
+        {
+            <MudSpacer/>
+            <MudIconButton Icon="@Icons.Material.Filled.Info" Href="@_link"/>
+        }
     </MudCardHeader>
     <MudCardContent>
         <StatisticTable Statistics="@(new[] { _statistics.Overall })" />
@@ -49,6 +54,7 @@
     private Statistics _statistics = new();
     private ICollection<Play> _playHistory = new List<Play>();
     private string _title = "Faction";
+    private string? _link = null;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -57,6 +63,7 @@
         
         var faction = await FactionClient.GetAsync(FactionIdentifier);
         _title = faction.Name;
+        _link = faction.Link;
 
         StateHasChanged();
     }
