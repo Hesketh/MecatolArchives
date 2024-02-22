@@ -332,12 +332,25 @@
 
     private sealed class PlayerModel
     {
+        private Person? _person;
         public uint Points { get; set; }
         public bool Winner { get; set; }
         public bool Eliminated { get; set; }
         public uint DraftOrder { get; set; }
-        
-        public Person? Person { get; set; }
+
+        public Person? Person
+        {
+            get => _person;
+            set
+            {
+                _person = value;
+                if (_person?.DefaultColour != null)
+                {
+                    Colour = _person.DefaultColour;
+                }
+            }
+        }
+
         public Faction? Faction { get; set; }
         public Colour? Colour { get; set; }
 

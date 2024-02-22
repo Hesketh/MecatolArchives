@@ -49,7 +49,14 @@
                 <MudTextField T="string" @bind-Value="@context.Item.Name"></MudTextField>
             </EditTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x => x.HideFromStatistics"/>
+        <TemplateColumn Title="Hide" Sortable="false">
+            <CellTemplate>
+                <MudCheckBox T="bool" @bind-Value="context.Item.HideFromStatistics" ReadOnly="true" DisableRipple="true"/>
+            </CellTemplate>
+            <EditTemplate>
+                <MudCheckBox T="bool" @bind-Value="context.Item.HideFromStatistics" ReadOnly="false" Label="Hide"/>
+            </EditTemplate>
+        </TemplateColumn>
         <PropertyColumn Property="x => x.Link" Required="false"/>
         <TemplateColumn Hidden="@(_dataGrid.ReadOnly)" CellClass="d-flex justify-end" Sortable="false">
             <CellTemplate>

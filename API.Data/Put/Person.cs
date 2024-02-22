@@ -9,6 +9,7 @@ public sealed class Person : IEntity
         Identifier = person.Identifier;
         Name = person.Name;
         DefaultColourId = person.DefaultColour?.Identifier;
+        HideFromStatistics = person.HideFromStatistics;
     }
     
     public Guid Identifier { get; set; }

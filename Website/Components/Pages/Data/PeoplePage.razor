@@ -32,8 +32,15 @@
     </ToolBarContent>
     <Columns>
         <PropertyColumn Property="x => x.Name"/>
-        <PropertyColumn Property="x => x.HideFromStatistics"/>
-        <TemplateColumn Sortable="false">
+        <TemplateColumn Title="Hide" Sortable="false">
+            <CellTemplate>
+                <MudCheckBox T="bool" @bind-Value="context.Item.HideFromStatistics" ReadOnly="true" DisableRipple="true"/>
+            </CellTemplate>
+            <EditTemplate>
+                <MudCheckBox T="bool" @bind-Value="context.Item.HideFromStatistics" ReadOnly="false" Label="Hide"/>
+            </EditTemplate>
+        </TemplateColumn>
+        <TemplateColumn Sortable="false" Title="Default Colour">
             <CellTemplate>
                 @if (context.Item.DefaultColour != null)
                 {
