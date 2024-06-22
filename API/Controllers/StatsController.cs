@@ -22,7 +22,7 @@ public sealed class StatsController : ControllerBase
         var overall = new Statistics();
 
         var statsLookup = new Dictionary<Guid, Statistic>();
-        foreach (var faction in _db.Factions)
+        foreach (var faction in _db.Factions.Where(x => !x.HideFromStatistics))
         {
             statsLookup[faction.Identifier] = new Statistic(faction.Name, faction.Identifier);
         }
