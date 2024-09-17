@@ -14,6 +14,7 @@ public class Player : IEntity
     public virtual Play Play { get; set; } = null!;
     public virtual Faction Faction { get; set; } = null!;
     public virtual Colour Colour { get; set; } = null!;
+    public virtual ICollection<PlayerAchievement> Achievements { get; set; } = new List<PlayerAchievement>();
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
