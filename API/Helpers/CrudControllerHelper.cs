@@ -24,7 +24,7 @@ public sealed class CrudControllerHelper<TDatabase, TGet, TPut, TPost> : Control
     //[HttpGet("{identifier}")]
     public async Task<ActionResult<TGet>> GetAsync(Guid identifier)
     {
-        var res = await _db.GetDbSet<TDatabase>().FirstOrDefaultAsync(x => x.Identifier == identifier);
+        var res = await _db.Set<TDatabase>().FirstOrDefaultAsync(x => x.Identifier == identifier);
         if (res == null) return NotFound();
 
         var mapped = _mapper.Map<TGet>(res);
@@ -34,7 +34,7 @@ public sealed class CrudControllerHelper<TDatabase, TGet, TPut, TPost> : Control
     //[HttpGet]
     public async Task<ActionResult<ICollection<TGet>>> GetAsync()
     {
-        var res = await _db.GetDbSet<TDatabase>()
+        var res = await _db.Set<TDatabase>()
             .OrderBy(x => x.Name)
             .ToListAsync();
         var mapped = _mapper.Map<ICollection<TGet>>(res);
@@ -45,7 +45,7 @@ public sealed class CrudControllerHelper<TDatabase, TGet, TPut, TPost> : Control
     public async Task<ActionResult<TGet>> PostAsync(TPost model)
     {
         var entity = _mapper.Map<TDatabase>(model);
-        await _db.GetDbSet<TDatabase>().AddAsync(entity);
+        await _db.Set<TDatabase>().AddAsync(entity);
         await _db.SaveChangesAsync();
 
         var mapped = _mapper.Map<TGet>(entity);
@@ -55,7 +55,7 @@ public sealed class CrudControllerHelper<TDatabase, TGet, TPut, TPost> : Control
     //[HttpPut]
     public async Task<ActionResult<TGet>> PutAsync(TPut model)
     {
-        var entity = await _db.GetDbSet<TDatabase>().FirstOrDefaultAsync(x => x.Identifier == model.Identifier);
+        var entity = await _db.Set<TDatabase>().FirstOrDefaultAsync(x => x.Identifier == model.Identifier);
         if (entity == null) return NotFound();
 
         entity = _mapper.Map(model, entity);
@@ -68,10 +68,10 @@ public sealed class CrudControllerHelper<TDatabase, TGet, TPut, TPost> : Control
     //[HttpDelete("{identifier}")]
     public async Task<IActionResult> DeleteAsync(Guid identifier)
     {
-        var entity = await _db.GetDbSet<TDatabase>().FirstOrDefaultAsync(x => x.Identifier == identifier);
+        var entity = await _db.Set<TDatabase>().FirstOrDefaultAsync(x => x.Identifier == identifier);
         if (entity == null) return NotFound();
 
-        _db.GetDbSet<TDatabase>().Remove(entity);
+        _db.Set<TDatabase>().Remove(entity);
         await _db.SaveChangesAsync();
 
         return Ok();

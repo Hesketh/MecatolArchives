@@ -1,0 +1,68 @@
+﻿@using Hesketh.MecatolArchives.API.Client.Clients
+@using Hesketh.MecatolArchives.API.Data
+@inject AchievementClient AchievementClient
+@inject PersonClient PersonClient
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Grant Achievement</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudSelect T="Achievement"
+                   @bind-Value="_selectedAchievement"
+                   Label="Achievement"
+                   Clearable="false">
+            @foreach (var achievement in _achievements)
+            {
+                <MudSelectItem T="Achievement" Value="@achievement">@achievement.Name</MudSelectItem>
+            }
+        </MudSelect>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Color="Color.Info">Cancel</MudButton>
+        
+        <MudButtonGroup>
+            <MudButton OnClick="Revoke" Color="Color.Error">Revoke</MudButton>
+            <MudButton OnClick="Grant" Color="Color.Success">Grant</MudButton>
+        </MudButtonGroup>
+    </DialogActions>
+</MudDialog>
+
+@code 
+{
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public Guid PersonIdentifier { get; set; }
+
+    private ICollection<Achievement> _achievements = new List<Achievement>();
+    private Achievement? _selectedAchievement = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _achievements = new List<Achievement>(await AchievementClient.GetAsync());
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Grant()
+    {
+        if (_selectedAchievement != null)
+        {
+            await PersonClient.GrantAchievementAsync(PersonIdentifier, _selectedAchievement.Identifier);
+
+            MudDialog.Close();
+        }
+    }
+    
+    private async Task Revoke()
+    {
+        if (_selectedAchievement != null)
+        {
+            await PersonClient.RevokeAchievementAsync(PersonIdentifier, _selectedAchievement.Identifier);
+
+            MudDialog.Close();
+        }
+    }
+}

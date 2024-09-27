@@ -3,27 +3,35 @@ using System;
 using Hesketh.MecatolArchives.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
+namespace Hesketh.MecatolArchives.DB.Migrations.Mssql.Migrations
 {
     [DbContext(typeof(MecatolArchivesDbContext))]
-    partial class MecatolArchivesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240927203846_Achievements")]
+    partial class Achievements
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("ExpansionPlay", b =>
                 {
                     b.Property<Guid>("ExpansionsIdentifier")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PlaysIdentifier")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ExpansionsIdentifier", "PlaysIdentifier");
 
@@ -36,17 +44,17 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
                 {
                     b.Property<Guid>("Identifier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Condition")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(512)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(512)");
 
                     b.HasKey("Identifier");
 
@@ -209,15 +217,15 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
                 {
                     b.Property<Guid>("Identifier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Hex")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Identifier");
 
@@ -284,11 +292,11 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
                 {
                     b.Property<Guid>("Identifier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Identifier");
 
@@ -331,17 +339,17 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
                 {
                     b.Property<Guid>("Identifier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("HideFromStatistics")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Link")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Identifier");
 
@@ -522,17 +530,17 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
                 {
                     b.Property<Guid>("Identifier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("DefaultColourIdentifier")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("HideFromStatistics")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Identifier");
 
@@ -541,47 +549,23 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
                     b.ToTable("People");
                 });
 
-            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.PersonAchievement", b =>
-                {
-                    b.Property<Guid>("Identifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("AchievementIdentifier")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateAccomplished")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("PersonIdentifier")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Identifier");
-
-                    b.HasIndex("AchievementIdentifier");
-
-                    b.HasIndex("PersonIdentifier");
-
-                    b.ToTable("PersonAchievements");
-                });
-
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Play", b =>
                 {
                     b.Property<Guid>("Identifier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Map")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<uint>("PointGoal")
-                        .HasColumnType("INTEGER");
+                    b.Property<long>("PointGoal")
+                        .HasColumnType("bigint");
 
                     b.Property<double>("RulesVersion")
-                        .HasColumnType("REAL");
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("UtcDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Identifier");
 
@@ -592,31 +576,31 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
                 {
                     b.Property<Guid>("Identifier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ColourIdentifier")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<uint>("DraftOrder")
-                        .HasColumnType("INTEGER");
+                    b.Property<long>("DraftOrder")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("Eliminated")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("FactionIdentifier")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PersonIdentifier")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PlayIdentifier")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<uint>("Points")
-                        .HasColumnType("INTEGER");
+                    b.Property<long>("Points")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("Winner")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.HasKey("Identifier");
 
@@ -631,15 +615,39 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
                     b.ToTable("Players");
                 });
 
+            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.PlayerAchievement", b =>
+                {
+                    b.Property<Guid>("Identifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AchievementIdentifier")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateAccomplished")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PlayerIdentifier")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Identifier");
+
+                    b.HasIndex("AchievementIdentifier");
+
+                    b.HasIndex("PlayerIdentifier");
+
+                    b.ToTable("PlayerAchievements");
+                });
+
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Variant", b =>
                 {
                     b.Property<Guid>("Identifier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Identifier");
 
@@ -676,10 +684,10 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
             modelBuilder.Entity("PlayVariant", b =>
                 {
                     b.Property<Guid>("PlaysIdentifier")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("VariantsIdentifier")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("PlaysIdentifier", "VariantsIdentifier");
 
@@ -710,25 +718,6 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
                         .HasForeignKey("DefaultColourIdentifier");
 
                     b.Navigation("DefaultColour");
-                });
-
-            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.PersonAchievement", b =>
-                {
-                    b.HasOne("Hesketh.MecatolArchives.DB.Models.Achievement", "Achievement")
-                        .WithMany("People")
-                        .HasForeignKey("AchievementIdentifier")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Hesketh.MecatolArchives.DB.Models.Person", "Person")
-                        .WithMany("Achievements")
-                        .HasForeignKey("PersonIdentifier")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Achievement");
-
-                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Player", b =>
@@ -766,6 +755,25 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
                     b.Navigation("Play");
                 });
 
+            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.PlayerAchievement", b =>
+                {
+                    b.HasOne("Hesketh.MecatolArchives.DB.Models.Achievement", "Achievement")
+                        .WithMany("Players")
+                        .HasForeignKey("AchievementIdentifier")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hesketh.MecatolArchives.DB.Models.Player", "Player")
+                        .WithMany("Achievements")
+                        .HasForeignKey("PlayerIdentifier")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Achievement");
+
+                    b.Navigation("Player");
+                });
+
             modelBuilder.Entity("PlayVariant", b =>
                 {
                     b.HasOne("Hesketh.MecatolArchives.DB.Models.Play", null)
@@ -783,17 +791,17 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Sqlite.Migrations
 
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Achievement", b =>
                 {
-                    b.Navigation("People");
-                });
-
-            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Person", b =>
-                {
-                    b.Navigation("Achievements");
+                    b.Navigation("Players");
                 });
 
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Play", b =>
                 {
                     b.Navigation("Players");
+                });
+
+            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Player", b =>
+                {
+                    b.Navigation("Achievements");
                 });
 #pragma warning restore 612, 618
         }

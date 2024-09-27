@@ -37,6 +37,179 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Mssql.Migrations
                     b.ToTable("ExpansionPlay");
                 });
 
+            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Achievement", b =>
+                {
+                    b.Property<Guid>("Identifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Condition")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.HasKey("Identifier");
+
+                    b.ToTable("Achievements");
+
+                    b.HasData(
+                        new
+                        {
+                            Identifier = new Guid("92ea4713-8c2d-43a8-8be1-0b24a4d1dc72"),
+                            Condition = "Win a game with 40 or more unspent trade goods",
+                            Name = "Dragon Hoard"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("bd1cf513-c6ef-44e5-ac4d-02c17fd0b11c"),
+                            Condition = "Score 6 VP in one game round",
+                            Name = "Not a Threat"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("ac0da407-c6ef-44e5-ac4d-02c17fd0b11c"),
+                            Condition = "Win a 1v1 Infantry-only combat that lasted longer than 8 rounds",
+                            Name = "Forever War"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("bc8e2ebc-a3a6-4311-932e-f99f5093ef06"),
+                            Condition = "Be on the losing side of an agenda in which at least 4 riders were contributed to the losing side",
+                            Name = "Four Horsemen, or Not a Very Good Psychic"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("0e928bf1-9527-42ea-9f2f-c3844e5af89f"),
+                            Condition = "Trade someone their own promissory note",
+                            Name = "I Made This"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("b2427957-809f-48df-82cd-a3e68ec6acd9"),
+                            Condition = "Achieve a move value of 9 on a single ship",
+                            Name = "Interdimensional Highway"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("164130f9-04b2-4565-83e2-a6e447eeac1d"),
+                            Condition = "Score your 10th victory point from Become a Martyr",
+                            Name = "It was Always Going to Be Me"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("bca4b731-ed05-4a8d-a999-6d2691bd2910"),
+                            Condition = "Research every technology of one colour",
+                            Name = "It's Probably Blue"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("de70f3cb-055b-4e00-adad-a13a3fd389d3"),
+                            Condition = "Score at least 5 secret objectives",
+                            Name = "Not-Very-Secret Objective"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("f695d3ad-c45f-4ca1-a6b7-24eca4fc3f2c"),
+                            Condition = "Win a game without researching technology",
+                            Name = "Mano-a-Mano"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("ff07a297-5138-4833-bf5f-0d05c5b03714"),
+                            Condition = "Build all of your plastic units",
+                            Name = "Materiel World"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("d36b22df-ec6d-462c-bbad-5e4c1de7c31e"),
+                            Condition = "Lose 10 or more units at once to the Van Hague as the Yin Brotherhood",
+                            Name = "OSHA Violation"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("346cd853-985b-43fd-aef9-84f3ab191a84"),
+                            Condition = "Have an Alliance promissory that belongs to each other player in a 6-8 player game",
+                            Name = "Rainbow Deluxe Ultra"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("39671dae-9c18-48df-a553-97da3c274825"),
+                            Condition = "Lose 35 resources worth of units in one combat",
+                            Name = "Reduce, Reuse, Regret"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("9b6702fc-e324-477a-802d-d356641f22e2"),
+                            Condition = "As Jol-Nar, have at least 12 technologies and replace them with 12 different technologies",
+                            Name = "Rinfinity"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("199cac45-fb56-4a1d-b70e-b15e92e3295b"),
+                            Condition = "Have at least 1 promissory note that belongs to each other player in a 6-8 player game",
+                            Name = "ROYGBIV"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("296beeb1-3274-4bd3-aca4-0286aa56ea60"),
+                            Condition = "Lose 10 or more units at once to the Van Hague, Nova Seed, Armageddon Relay, Stellar Converter, Ixthian Artifact, or Dimensional Anchor",
+                            Name = "Sincerely, Deleted"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("7d4629c6-f7e9-447e-a782-af89ed6ce9fd"),
+                            Condition = "Win a game without initiating combat against or exchanging possessions with another player",
+                            Name = "Solitaire"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("3b4a3002-bde6-4987-9286-0657c9a3a855"),
+                            Condition = "As the Mahact, have at least 5 command tokens on your sheet that belong to other players",
+                            Name = "Someone Call and Ambulance"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("bdc26e9a-d83d-43f8-8bfd-31828e9341cf"),
+                            Condition = "As a non-Creuss player, fire a PDS shot through the Hil Colish into another system",
+                            Name = "That's Illegal"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("5b5904b4-43f8-4a5e-8135-bd16b940c3c5"),
+                            Condition = "Participate in a game that ends with Imperium Rex",
+                            Name = "This Doesn't Seem Physically Possible"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("fa69694d-1f7f-4e56-8a72-6dc6c1c37039"),
+                            Condition = "Control 3 other players' home system at the same time",
+                            Name = "This Hurts You"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("6925136c-5ab4-46cd-a056-10ae4954bf05"),
+                            Condition = "Research Dacxive Animators, Magen Defense Grid, Infantry II, X-89 Bacterial Weapon, Psychoarchaeology and no other technologies",
+                            Name = "We Trained Him Wrong, As a Joke"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("94a53e84-ad95-47c0-92c1-a69a0c3c60d0"),
+                            Condition = "Refresh no toehr player's commodities when resolving the primary ability of the Trade strategy card",
+                            Name = "X Minus This"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("8e9165ba-6f5e-4690-971f-ec62120f50a2"),
+                            Condition = "Completely wipe out a planet that had at least 3 infantry using the Plague action card",
+                            Name = "49/59"
+                        });
+                });
+
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Colour", b =>
                 {
                     b.Property<Guid>("Identifier")
@@ -373,6 +546,30 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Mssql.Migrations
                     b.ToTable("People");
                 });
 
+            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.PersonAchievement", b =>
+                {
+                    b.Property<Guid>("Identifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AchievementIdentifier")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateAccomplished")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PersonIdentifier")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Identifier");
+
+                    b.HasIndex("AchievementIdentifier");
+
+                    b.HasIndex("PersonIdentifier");
+
+                    b.ToTable("PersonAchievements");
+                });
+
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Play", b =>
                 {
                     b.Property<Guid>("Identifier")
@@ -452,6 +649,33 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Mssql.Migrations
                     b.HasKey("Identifier");
 
                     b.ToTable("Variants");
+
+                    b.HasData(
+                        new
+                        {
+                            Identifier = new Guid("4082a883-4c5f-44c7-abf6-0d4823698cb0"),
+                            Name = "Standard"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("f018f38e-85fd-4c5b-9036-d9c071aae506"),
+                            Name = "Competitive"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("c0db28a6-29e1-4463-a187-dd49d5416c0a"),
+                            Name = "Milty"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("b6125086-d6ae-4f4a-b981-5f4e63b15cc0"),
+                            Name = "Alliance"
+                        },
+                        new
+                        {
+                            Identifier = new Guid("5b8c8301-b5e9-4c72-b6fa-b07cb30005be"),
+                            Name = "Pax Magnifica"
+                        });
                 });
 
             modelBuilder.Entity("PlayVariant", b =>
@@ -491,6 +715,25 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Mssql.Migrations
                         .HasForeignKey("DefaultColourIdentifier");
 
                     b.Navigation("DefaultColour");
+                });
+
+            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.PersonAchievement", b =>
+                {
+                    b.HasOne("Hesketh.MecatolArchives.DB.Models.Achievement", "Achievement")
+                        .WithMany("People")
+                        .HasForeignKey("AchievementIdentifier")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hesketh.MecatolArchives.DB.Models.Person", "Person")
+                        .WithMany("Achievements")
+                        .HasForeignKey("PersonIdentifier")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Achievement");
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Player", b =>
@@ -541,6 +784,16 @@ namespace Hesketh.MecatolArchives.DB.Migrations.Mssql.Migrations
                         .HasForeignKey("VariantsIdentifier")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Achievement", b =>
+                {
+                    b.Navigation("People");
+                });
+
+            modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Person", b =>
+                {
+                    b.Navigation("Achievements");
                 });
 
             modelBuilder.Entity("Hesketh.MecatolArchives.DB.Models.Play", b =>

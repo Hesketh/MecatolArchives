@@ -30,6 +30,15 @@ public abstract class Client
         return content;
     }
 
+    protected async Task PostAsync(string endpoint)
+    {
+        using var requestMessage = new HttpRequestMessage(HttpMethod.Post, endpoint);
+        requestMessage.Headers.Authorization = await AuthHeaderProvider.GetHeaderAsync();
+
+        using var response = await HttpClient.SendAsync(requestMessage);
+        response.EnsureSuccessStatusCode();
+    }
+
     protected async Task PostAsync<TPostType>(string endpoint, TPostType content)
     {
         using var requestMessage = new HttpRequestMessage(HttpMethod.Post, endpoint);

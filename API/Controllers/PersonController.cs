@@ -40,7 +40,7 @@ public sealed class PersonController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<ICollection<Data.Person>>> Get()
     {
-        var res = await _db.GetDbSet<Person>()
+        var res = await _db.Set<Person>()
             .Include(x => x.DefaultColour)
             .OrderBy(x => x.Name)
             .ToListAsync();

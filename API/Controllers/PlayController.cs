@@ -28,7 +28,7 @@ public sealed class PlayController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<Data.Play>> Get(Guid identifier)
     {
-        var res = await _db.GetDbSet<Play>()
+        var res = await _db.Set<Play>()
             .Include(x => x.Players).ThenInclude(x => x.Person)
             .Include(x => x.Players).ThenInclude(x => x.Faction)
             .Include(x => x.Players).ThenInclude(x => x.Colour)
@@ -43,7 +43,7 @@ public sealed class PlayController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<ICollection<Data.Play>>> Get()
     {
-        var res = await _db.GetDbSet<Play>()
+        var res = await _db.Set<Play>()
             .OrderByDescending(x => x.UtcDate)
             .Include(x => x.Players).ThenInclude(x => x.Person)
             .Include(x => x.Players).ThenInclude(x => x.Faction)
@@ -59,7 +59,7 @@ public sealed class PlayController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<ICollection<Data.Play>>> GetWithPlayer(Guid personIdentifier)
     {
-        var res = await _db.GetDbSet<Play>()
+        var res = await _db.Set<Play>()
             .OrderByDescending(x => x.UtcDate)
             .Include(x => x.Players).ThenInclude(x => x.Person)
             .Include(x => x.Players).ThenInclude(x => x.Faction)
@@ -76,7 +76,7 @@ public sealed class PlayController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<ICollection<Data.Play>>> GetWithFaction(Guid factionIdentifier)
     {
-        var res = await _db.GetDbSet<Play>()
+        var res = await _db.Set<Play>()
             .OrderByDescending(x => x.UtcDate)
             .Include(x => x.Players).ThenInclude(x => x.Person)
             .Include(x => x.Players).ThenInclude(x => x.Faction)
@@ -125,10 +125,10 @@ public sealed class PlayController : ControllerBase
 
             entity.Players.Add(playerEntity);
             playerEntity.Play = entity;
-            await _db.GetDbSet<Player>().AddAsync(playerEntity);
+            await _db.Set<Player>().AddAsync(playerEntity);
         }
 
-        await _db.GetDbSet<Play>().AddAsync(entity);
+        await _db.Set<Play>().AddAsync(entity);
         await _db.SaveChangesAsync();
 
         var mapped = _mapper.Map<Data.Play>(entity);
@@ -138,7 +138,7 @@ public sealed class PlayController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<Data.Play>> Put(Data.Put.Play model)
     {
-        var existingEntity = await _db.GetDbSet<Play>()
+        var existingEntity = await _db.Set<Play>()
             .Include(x => x.Players).ThenInclude(x => x.Person)
             .Include(x => x.Players).ThenInclude(x => x.Faction)
             .Include(x => x.Players).ThenInclude(x => x.Colour)
