@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hesketh.MecatolArchives.DB.Models;
 
-public class Achievement : IEntity
+public class Achievement : IEntity, INamed
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -11,7 +11,7 @@ public class Achievement : IEntity
 
     [MinLength(0)]
     [MaxLength(512)]
-    public string Title { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     [MinLength(0)]
     [MaxLength(1024)]

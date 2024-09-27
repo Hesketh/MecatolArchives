@@ -28,6 +28,138 @@ public sealed class MecatolArchivesDbContext : DbContext
         SeedExpansions(modelBuilder);
         SeedColours(modelBuilder);
         SeedFactions(modelBuilder);
+        SeedVariants(modelBuilder);
+        SeedAchievements(modelBuilder);
+    }
+
+    private void SeedAchievements(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Achievement>().HasData(new Achievement
+        {
+            Identifier = Guid.Parse("92ea4713-8c2d-43a8-8be1-0b24a4d1dc72"),
+            Name = "Dragon Hoard",
+            Condition = "Win a game with 40 or more unspent trade goods"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("bd1cf513-c6ef-44e5-ac4d-02c17fd0b11c"),
+            Name = "Not a Threat",
+            Condition = "Score 6 VP in one game round"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("ac0da407-c6ef-44e5-ac4d-02c17fd0b11c"),
+            Name = "Forever War",
+            Condition = "Win a 1v1 Infantry-only combat that lasted longer than 8 rounds"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("bc8e2ebc-a3a6-4311-932e-f99f5093ef06"),
+            Name = "Four Horsemen, or Not a Very Good Psychic",
+            Condition = "Be on the losing side of an agenda in which at least 4 riders were contributed to the losing side"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("0e928bf1-9527-42ea-9f2f-c3844e5af89f"),
+            Name = "I Made This",
+            Condition = "Trade someone their own promissory note"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("b2427957-809f-48df-82cd-a3e68ec6acd9"),
+            Name = "Interdimensional Highway",
+            Condition = "Achieve a move value of 9 on a single ship"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("164130f9-04b2-4565-83e2-a6e447eeac1d"),
+            Name = "It was Always Going to Be Me",
+            Condition = "Score your 10th victory point from Become a Martyr"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("bca4b731-ed05-4a8d-a999-6d2691bd2910"),
+            Name = "It's Probably Blue",
+            Condition = "Research every technology of one colour"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("de70f3cb-055b-4e00-adad-a13a3fd389d3"),
+            Name = "Not-Very-Secret Objective",
+            Condition = "Score at least 5 secret objectives"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("f695d3ad-c45f-4ca1-a6b7-24eca4fc3f2c"),
+            Name = "Mano-a-Mano",
+            Condition = "Win a game without researching technology"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("ff07a297-5138-4833-bf5f-0d05c5b03714"),
+            Name = "Materiel World",
+            Condition = "Build all of your plastic units"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("d36b22df-ec6d-462c-bbad-5e4c1de7c31e"),
+            Name = "OSHA Violation",
+            Condition = "Lose 10 or more units at once to the Van Hague as the Yin Brotherhood"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("346cd853-985b-43fd-aef9-84f3ab191a84"),
+            Name = "Rainbow Deluxe Ultra",
+            Condition = "Have an Alliance promissory that belongs to each other player in a 6-8 player game"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("39671dae-9c18-48df-a553-97da3c274825"),
+            Name = "Reduce, Reuse, Regret",
+            Condition = "Lose 35 resources worth of units in one combat"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("9b6702fc-e324-477a-802d-d356641f22e2"),
+            Name = "Rinfinity",
+            Condition = "As Jol-Nar, have at least 12 technologies and replace them with 12 different technologies"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("199cac45-fb56-4a1d-b70e-b15e92e3295b"),
+            Name = "ROYGBIV",
+            Condition = "Have at least 1 promissory note that belongs to each other player in a 6-8 player game"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("296beeb1-3274-4bd3-aca4-0286aa56ea60"),
+            Name = "Sincerely, Deleted",
+            Condition = "Lose 10 or more units at once to the Van Hague, Nova Seed, Armageddon Relay, Stellar Converter, Ixthian Artifact, or Dimensional Anchor"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("7d4629c6-f7e9-447e-a782-af89ed6ce9fd"),
+            Name = "Solitaire",
+            Condition = "Win a game without initiating combat against or exchanging possessions with another player"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("3b4a3002-bde6-4987-9286-0657c9a3a855"),
+            Name = "Someone Call and Ambulance",
+            Condition = "As the Mahact, have at least 5 command tokens on your sheet that belong to other players"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("bdc26e9a-d83d-43f8-8bfd-31828e9341cf"),
+            Name = "That's Illegal",
+            Condition = "As a non-Creuss player, fire a PDS shot through the Hil Colish into another system"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("5b5904b4-43f8-4a5e-8135-bd16b940c3c5"),
+            Name = "This Doesn't Seem Physically Possible",
+            Condition = "Participate in a game that ends with Imperium Rex"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("fa69694d-1f7f-4e56-8a72-6dc6c1c37039"),
+            Name = "This Hurts You",
+            Condition = "Control 3 other players' home system at the same time"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("6925136c-5ab4-46cd-a056-10ae4954bf05"),
+            Name = "We Trained Him Wrong, As a Joke",
+            Condition = "Research Dacxive Animators, Magen Defense Grid, Infantry II, X-89 Bacterial Weapon, Psychoarchaeology and no other technologies"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("94a53e84-ad95-47c0-92c1-a69a0c3c60d0"),
+            Name = "X Minus This",
+            Condition = "Refresh no toehr player's commodities when resolving the primary ability of the Trade strategy card"
+        },new Achievement
+        {
+            Identifier = Guid.Parse("8e9165ba-6f5e-4690-971f-ec62120f50a2"),
+            Name = "49/59",
+            Condition = "Completely wipe out a planet that had at least 3 infantry using the Plague action card"
+        });
     }
 
     private void SeedVariants(ModelBuilder modelBuilder)

@@ -14,5 +14,6 @@ public class Post : Profile
         CreateMap<Person, DB.Models.Person>();
         CreateMap<Play, DB.Models.Play>();
         CreateMap<Player, DB.Models.Player>();
+        CreateMap<Achievement, DB.Models.Achievement>().ReverseMap();
     }
 }

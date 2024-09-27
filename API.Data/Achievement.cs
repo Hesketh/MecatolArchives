@@ -8,7 +8,7 @@ public class Achievement : IEntity
 
     [MinLength(0)]
     [MaxLength(512)]
-    public string Title { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     [MinLength(0)]
     [MaxLength(1024)]

@@ -1,0 +1,93 @@
+﻿@page "/data/achievements"
+@using Hesketh.MecatolArchives.API.Client.Clients
+@using Hesketh.MecatolArchives.API.Data
+@inject AchievementClient AchievementClient;
+@inject IDialogService DialogService
+
+<PageTitle>Achievements</PageTitle>
+
+<MudDataGrid T="Achievement" Items="@_achievements"
+             ReadOnly="@(!Authenticated)"
+             EditMode="DataGridEditMode.Form"
+             CommittedItemChanges="CommitItemChanges"
+             EditTrigger="DataGridEditTrigger.Manual"
+             @ref="_dataGrid">
+    <ColGroup>
+        <col style="width: auto" />
+        <col style="width: auto" />
+        @if (!_dataGrid.ReadOnly)
+        {
+            <col style="width: 100px" />
+        }
+    </ColGroup>
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">ACHIEVEMENTS</MudText>
+        <MudSpacer />
+        @if (!_dataGrid.ReadOnly)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateNew" />
+        }
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.Condition" />
+        <TemplateColumn Hidden="@(_dataGrid.ReadOnly)" CellClass="d-flex justify-end" Sortable="false">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Delete(context.Item))" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code
+{
+    private MudDataGrid<Achievement> _dataGrid = null!;
+    private List<Achievement> _achievements = new();
+
+    [CascadingParameter] public bool Authenticated { get; set; } = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _achievements = new List<Achievement>(await AchievementClient.GetAsync());
+    }
+
+    private async void Delete(Achievement achievement)
+    {
+        var delete = await DialogService.ShowMessageBox("Delete", $"Are you sure you wish to delete {achievement.Name}?", "Yes", "No");
+        if (delete != true)
+            return;
+
+        await AchievementClient.DeleteAsync(achievement.Identifier);
+        _achievements.Remove(achievement);
+
+        StateHasChanged();
+    }
+
+    private async void CreateNew()
+    {
+        await _dataGrid.SetEditingItemAsync(new Achievement());
+        StateHasChanged();
+    }
+
+    private async void CommitItemChanges(Achievement achievement)
+    {
+        if (achievement.Identifier != Guid.Empty)
+        {
+            await AchievementClient.UpdateAsync(achievement);
+        }
+        else
+        {
+            var result = await AchievementClient.CreateAsync(new API.Data.Post.Achievement
+                {
+                    Condition = achievement.Condition,
+                    Name = achievement.Name
+                });
+            achievement.Identifier = result.Identifier;
+
+            _achievements.Add(achievement);
+        }
+
+        StateHasChanged();
+    }
+}

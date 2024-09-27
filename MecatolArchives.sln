@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.Client", "API.Client\AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Website", "Website\Website.csproj", "{AAFD2307-F2BE-4E14-8D5A-231D65C9DF87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DB.Migrations.Sqlite", "DB.Migrations.Sqlite\DB.Migrations.Sqlite.csproj", "{610EB756-1BDB-4CBE-98BA-06FC31E59271}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DB.Migrations.Sqlite", "DB.Migrations.Sqlite\DB.Migrations.Sqlite.csproj", "{610EB756-1BDB-4CBE-98BA-06FC31E59271}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DB.Migrations.Mssql", "DB.Migrations.Mssql\DB.Migrations.Mssql.csproj", "{C8A9F219-2852-42F6-8C49-6133798BDECA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DB.Migrations.Mssql", "DB.Migrations.Mssql\DB.Migrations.Mssql.csproj", "{C8A9F219-2852-42F6-8C49-6133798BDECA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

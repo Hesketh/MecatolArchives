@@ -24,6 +24,7 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddHttpClient<VariantClient>(client => { client.BaseAddress = apiAddress; });
         serviceCollection.AddHttpClient<PlayClient>(client => { client.BaseAddress = apiAddress; });
         serviceCollection.AddHttpClient<StatisticClient>(client => { client.BaseAddress = apiAddress; });
+        serviceCollection.AddHttpClient<AchievementClient>(client => { client.BaseAddress = apiAddress; });
 
         return serviceCollection;
     }
