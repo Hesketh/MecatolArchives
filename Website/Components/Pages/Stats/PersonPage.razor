@@ -2,10 +2,12 @@
 @using Hesketh.MecatolArchives.API.Data
 @using Hesketh.MecatolArchives.API.Client.Clients
 @using Hesketh.MecatolArchives.Website.Components.Controls;
+@using Hesketh.MecatolArchives.Website.Components.Dialogs
 @using Hesketh.MecatolArchives.Website.Helpers
 @inject StatisticClient StatisticClient
 @inject PersonClient PersonClient
-@inject PlayClient PlayClient;
+@inject PlayClient PlayClient
+@inject IDialogService DialogService
 
 <PageTitle>@_title</PageTitle>
 
@@ -24,8 +26,23 @@
     </MudCardHeader>
     <MudCardContent>
         <StatisticTable Statistics="@_statistics.Stats"
-                        NavigationFormat="stats/factions/{0}" 
+                        NavigationFormat="stats/factions/{0}"
                         GetCustomNamePrefixFragment="GetFactionIcon" />
+    </MudCardContent>
+</MudCard>
+
+<MudCard Style="margin-bottom: 16px">
+    <MudCardHeader>
+        <MudText Typo="Typo.h4" Style="margin: 16px">Achievements</MudText>
+        @if (Authenticated)
+        {
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Custom.Uncategorized.ChessKing"
+                           OnClick="GrantRevokeAchievements" />
+        }
+    </MudCardHeader>
+    <MudCardContent>
+        <PersonAchievements @ref="_personAchievementsControl" PersonIdentifier="@PersonIdentifier" />
     </MudCardContent>
 </MudCard>
 
@@ -34,22 +51,26 @@
         <MudText Typo="Typo.h4" Style="margin: 16px">Play History</MudText>
     </MudCardHeader>
     <MudCardContent>
-        <PlayHistory ReadOnly="true" Plays="@_playHistory"/>
+        <PlayHistory ReadOnly="true" Plays="@_playHistory" />
     </MudCardContent>
 </MudCard>
 
 @code
 {
     [Parameter] public Guid PersonIdentifier { get; set; }
+    [CascadingParameter] public bool Authenticated { get; set; } = false;
+
     private Statistics _statistics = new();
     private ICollection<Play> _playHistory = new List<Play>();
     private string _title = "Player";
+
+    private PersonAchievements _personAchievementsControl = null!;
 
     protected override async Task OnParametersSetAsync()
     {
         _statistics = await StatisticClient.GetPersonFactionStatistics(PersonIdentifier);
         _playHistory = await PlayClient.GetPersonsPlaysAsync(PersonIdentifier);
-        
+
         var person = await PersonClient.GetAsync(PersonIdentifier);
         _title = person.Name;
 
@@ -63,5 +84,19 @@
             return @<MudImage Width="32" Height="32" Src="@FactionIconHelper.GetFactionIcon(statistic.Name)" Style="display: inline-block;" />;
         }
         return null;
+    }
+
+    private async Task GrantRevokeAchievements()
+    {
+        var dialog = await DialogService.ShowAsync<GrantAchievementDialog>("Grant Achievements", new DialogParameters
+        {
+            { nameof(GrantAchievementDialog.PersonIdentifier), PersonIdentifier }
+        });
+
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            await _personAchievementsControl.Refresh();
+        }
     }
 }

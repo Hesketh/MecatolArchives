@@ -17,5 +17,5 @@ public class Achievement : IEntity, INamed
     [MaxLength(1024)]
     public string Condition { get; set; } = string.Empty;
 
-    public virtual ICollection<PlayerAchievement> Players { get; set; } = new List<PlayerAchievement>();    
+    public virtual ICollection<PersonAchievement> People { get; set; } = new List<PersonAchievement>();    
 }

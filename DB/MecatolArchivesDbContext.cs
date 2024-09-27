@@ -19,7 +19,7 @@ public sealed class MecatolArchivesDbContext : DbContext
     public DbSet<Player> Players { get; set; } = null!;
     public DbSet<Variant> Variants { get; set; } = null!;
     public DbSet<Achievement> Achievements { get; set; } = null!;
-    public DbSet<PlayerAchievement> PlayerAchievements { get; set; } = null!;
+    public DbSet<PersonAchievement> PersonAchievements { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -153,7 +153,7 @@ public sealed class MecatolArchivesDbContext : DbContext
         {
             Identifier = Guid.Parse("94a53e84-ad95-47c0-92c1-a69a0c3c60d0"),
             Name = "X Minus This",
-            Condition = "Refresh no toehr player's commodities when resolving the primary ability of the Trade strategy card"
+            Condition = "Refresh no other player's commodities when resolving the primary ability of the Trade strategy card"
         },new Achievement
         {
             Identifier = Guid.Parse("8e9165ba-6f5e-4690-971f-ec62120f50a2"),

@@ -19,6 +19,6 @@ public sealed class Full : Profile
         CreateMap<Data.Play, Play>();
         CreateMap<Player, Data.Player>().ReverseMap();
         CreateMap<Achievement, Data.Achievement>().ReverseMap();
-        CreateMap<PlayerAchievement, Data.PlayerAchievement>().ReverseMap();
+        CreateMap<PersonAchievement, Data.PersonAchievement>().ReverseMap();
     }
 }

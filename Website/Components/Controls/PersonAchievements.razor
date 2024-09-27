@@ -1,0 +1,39 @@
+﻿@using Hesketh.MecatolArchives.API.Client.Clients
+@using Hesketh.MecatolArchives.API.Data
+@inject PersonClient PersonClient
+
+<MudDataGrid T="PersonAchievement"
+             ServerData="ServerData"
+             Elevation="0"
+             ReadOnly="true"
+             Striped="true"
+             EditTrigger="DataGridEditTrigger.OnRowClick"
+             @ref="_dataGrid">
+    <Columns>
+        <PropertyColumn Property="x => x.Achievement.Name" />
+        <PropertyColumn Property="x => x.Achievement.Condition" />
+        <PropertyColumn Title="Achieved" Property="x => x.DateAccomplished" Format="dd-MM-yy"/>
+    </Columns>
+</MudDataGrid>
+
+@code
+{
+    [Parameter] public Guid PersonIdentifier { get; set; }
+
+    private MudDataGrid<PersonAchievement> _dataGrid = null!;
+
+    private async Task<GridData<PersonAchievement>> ServerData(GridState<PersonAchievement> arg)
+    {
+        var achievements = await PersonClient.GetAchievements(PersonIdentifier);
+        return new GridData<PersonAchievement>
+            {
+                Items = achievements,
+                TotalItems = achievements.Count
+            };
+    }
+
+    public async Task Refresh()
+    {
+        await _dataGrid.ReloadServerData();
+    }
+}

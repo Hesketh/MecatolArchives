@@ -1,7 +1,7 @@
 ﻿namespace Hesketh.MecatolArchives.API.Data;
 
-public class PlayerAchievement
+public class PersonAchievement
 {
     public Achievement Achievement { get; set; } = null!;
-    public bool Accomplished { get; set; } = false;
+    public DateTime? DateAccomplished { get; set; } = null;
 }
