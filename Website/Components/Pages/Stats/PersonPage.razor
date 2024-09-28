@@ -11,12 +11,57 @@
 
 <PageTitle>@_title</PageTitle>
 
+<style>
+    .mud-charts-xaxis text { writing-mode: vertical-rl; }
+    .mud-chart-line        { overflow: visible; }
+    .mud-charts-xaxis text { font-size: 12px; }
+    .mud-charts-yaxis text { font-size: 12px; }
+    .mud-chart-legend { display: none; visibility: hidden; }
+</style>
+
 <MudCard Style="margin-bottom: 16px">
     <MudCardHeader>
         <MudText Typo="Typo.h4" Style="margin: 16px">@_title</MudText>
     </MudCardHeader>
     <MudCardContent>
-        <StatisticTable Statistics="@(new[] { _statistics.Overall })" />
+        <MudText Align="Align.Right">Longest Win Streak: @_biggestWinStreak @(_currentWinStreak > 0 ? $" (Current: {_currentWinStreak})" : "")</MudText>
+        <StatisticTable Statistics="@(new[] { _statistics.Overall })"/>
+        
+        <MudGrid>
+            <MudItem md="6" xs="12">
+                <MudChart ChartType="ChartType.Line"
+                          ChartSeries="@_playerStatsChart"
+                          ChartOptions="@_playerStatsChartOptions"
+                          XAxisLabels="@_playerStatsLabels"
+                          Width="100%"
+                          Height="350px"
+                          CanHideSeries="true"/>
+            </MudItem>
+            
+            <MudItem md="6" xs="12">
+                <MudChart ChartType="ChartType.Donut" 
+                          Width="100%" 
+                          InputData="@_factionPlayCounts"
+                          Height="350px">
+                    <CustomGraphics>
+                        <text class="donut-inner-text" 
+                              x="50%" y="50%" 
+                              dominant-baseline="middle"
+                              text-anchor="middle" 
+                              fill="white"
+                              font-family="Helvetica" 
+                              font-size="3">@_uniqueFactionsPlayed / @_totalUniqueFactions</text>
+                        <text class="donut-inner-text" 
+                              x="50%" y="60%" 
+                              dominant-baseline="middle"
+                              text-anchor="middle" 
+                              fill="white"
+                              font-family="Helvetica" 
+                              font-size="2">Factions Played</text>
+                    </CustomGraphics>
+                </MudChart>
+            </MudItem>
+        </MudGrid>
     </MudCardContent>
 </MudCard>
 
@@ -64,6 +109,20 @@
     private ICollection<Play> _playHistory = new List<Play>();
     private string _title = "Player";
 
+    private int _biggestWinStreak = 0;
+    private int _currentWinStreak = 0;
+
+    private List<ChartSeries> _playerStatsChart = new();
+    private ChartOptions _playerStatsChartOptions = new()
+    {
+        MaxNumYAxisTicks = 100,
+    };
+    private string[] _playerStatsLabels = [];
+
+    private double[] _factionPlayCounts = [];
+    private int _uniqueFactionsPlayed = 0;
+    private int _totalUniqueFactions = 0;
+
     private PersonAchievements _personAchievementsControl = null!;
 
     protected override async Task OnParametersSetAsync()
@@ -73,6 +132,9 @@
 
         var person = await PersonClient.GetAsync(PersonIdentifier);
         _title = person.Name;
+
+        CalculateBonusStats();
+        CalculateFactionSpread();
 
         StateHasChanged();
     }
@@ -98,5 +160,82 @@
         {
             await _personAchievementsControl.Refresh();
         }
+    }
+
+    private void CalculateFactionSpread()
+    {
+        _factionPlayCounts = _statistics.Stats.Select(x => (double)x.Plays).ToArray();
+        _totalUniqueFactions = _statistics.Stats.Count;
+        _uniqueFactionsPlayed = _statistics.Stats.Count(x => x.Plays > 0);
+    }
+
+    private void CalculateBonusStats()
+    {
+        int streak = 0;
+
+        var victoryPointsPerc = new List<double>();
+        var avgVpPerc = new List<double>();
+        var playerStatsLabels = new List<string>();
+        var countingCurrentStreak = true;
+
+        foreach (var play in _playHistory.OrderByDescending(x => x.UtcDate))
+        {
+            var player = play.Players.First(x => x.Person.Identifier == PersonIdentifier);
+
+            // Add data to the line chart
+            var points = player.Eliminated ? 0 : player.Points;
+            victoryPointsPerc.Insert(0,((double)points / (double)play.PointGoal) * 100.0);
+
+            avgVpPerc.Insert(0,_statistics.Overall.PointPercentage);
+
+            playerStatsLabels.Insert(0,play.UtcDate.ToString("dd-MMM-yy"));
+
+            // Calculate the longest winning streak
+            if (player.Winner)
+            {
+                streak++;
+
+                if (countingCurrentStreak)
+                {
+                    _currentWinStreak++;
+                }
+            }
+            else if (!player.Winner)
+            {
+                countingCurrentStreak = false;
+
+                if (_biggestWinStreak < streak)
+                {
+                    _biggestWinStreak = streak;
+                }
+                streak = 0;
+            }
+        }
+
+        _playerStatsChart.Add(new ChartSeries
+        {
+            Data = victoryPointsPerc.ToArray(),
+            Index = 0,
+            IsVisible = true,
+            Name = "VP"
+        });
+
+        _playerStatsChart.Add(new ChartSeries
+        {
+            Data = avgVpPerc.ToArray(),
+            Index = 1,
+            IsVisible = true,
+            Name = "Avg"
+        });
+
+        _playerStatsChart.Add(new ChartSeries
+        {
+            Data = [0],
+            Index = 2,
+            IsVisible = true,
+            Name = "0"
+        });
+
+        _playerStatsLabels = playerStatsLabels.ToArray();
     }
 }
