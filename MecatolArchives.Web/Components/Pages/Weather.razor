@@ -1,0 +1,51 @@
+﻿@page "/weather"
+@using MecatolArchives.Domain.Dto
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+
+@inject MecatolArchives.ApiService.Client.MecatolArchivesApiClient Api
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data loaded from a backend API service.</p>
+
+@if (test == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Hex</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in test.Items)
+            {
+                <tr>
+                    <td>@forecast.Identifier</td>
+                    <td>@forecast.Name</td>
+                    <td>@forecast.Hex</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    QueriedCollection<Colour>? test = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        test = await Api.Colours.ReadColoursAsync(new Domain.Dto.QueryParameters()
+        {
+            Page = new Domain.Dto.PageParameters() { Number = 1, Size = 10 }
+        });
+    }
+}

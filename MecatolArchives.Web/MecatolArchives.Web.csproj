@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="..\MecatolArchives.ApiService.Client\MecatolArchives.ApiService.Client.csproj" />
+    <ProjectReference Include="..\MecatolArchives.ServiceDefaults\MecatolArchives.ServiceDefaults.csproj" />
+  </ItemGroup>
+</Project>

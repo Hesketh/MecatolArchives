@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MecatolArchives.DataAccess.Migrations.Mssql\MecatolArchives.DataAccess.Migrations.Mssql.csproj" />
+    <ProjectReference Include="..\MecatolArchives.DataAccess\MecatolArchives.DataAccess.csproj" />
+    <ProjectReference Include="..\MecatolArchives.Domain.Dto\MecatolArchives.Domain.Dto.csproj" />
+  </ItemGroup>
+
+</Project>

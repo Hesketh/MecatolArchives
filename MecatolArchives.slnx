@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="MecatolArchives.ApiService.Client/MecatolArchives.ApiService.Client.csproj" Id="ecab3015-3488-4191-a687-a389503a4928" />
+  <Project Path="MecatolArchives.ApiService/MecatolArchives.ApiService.csproj" />
+  <Project Path="MecatolArchives.AppHost/MecatolArchives.AppHost.csproj" />
+  <Project Path="MecatolArchives.DataAccess.Migrations.Mssql/MecatolArchives.DataAccess.Migrations.Mssql.csproj" />
+  <Project Path="MecatolArchives.DataAccess/MecatolArchives.DataAccess.csproj" />
+  <Project Path="MecatolArchives.Domain.Dto/MecatolArchives.Domain.Dto.csproj" Id="2fa4b89a-8096-475b-8fa8-306b2b9a0b44" />
+  <Project Path="MecatolArchives.Domain/MecatolArchives.Domain.csproj" Id="f47bcccd-eba0-41e8-b88c-bbeab706ae8b" />
+  <Project Path="MecatolArchives.ServiceDefaults/MecatolArchives.ServiceDefaults.csproj" />
+  <Project Path="MecatolArchives.Tests/MecatolArchives.Tests.csproj" />
+  <Project Path="MecatolArchives.Web/MecatolArchives.Web.csproj" />
+</Solution>
