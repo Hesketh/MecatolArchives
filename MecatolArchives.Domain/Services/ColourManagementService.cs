@@ -8,7 +8,7 @@ namespace MecatolArchives.Domain.Services;
 
 internal sealed class ColourManagementService(MecatolArchivesDbContext dbContext) : IColourManagementService
 {
-    public async Task<Colour> CreateColourAsync(CreateColourRequest request)
+    public async Task<Colour> CreateColourAsync(ColourCreateRequest request)
     {
         var dbModel = new DataAccess.Models.Colour
         {
@@ -31,8 +31,8 @@ internal sealed class ColourManagementService(MecatolArchivesDbContext dbContext
         return new QueriedCollection<Colour>
         {
             Items = colours,
-            PageNumber = query.Page.Number,
-            PageSize = query.Page.Size,
+            PageNumber = query.PageNumber,
+            PageSize = query.PageSize,
             TotalCount = totalCount
         };
     }
@@ -46,7 +46,7 @@ internal sealed class ColourManagementService(MecatolArchivesDbContext dbContext
         return MapDbModel(dbModel);
     }
 
-    public async Task<Colour> UpdateColourAsync(Guid identifier, UpdateColourRequest request)
+    public async Task<Colour> UpdateColourAsync(Guid identifier, ColourUpdateRequest request)
     {
         var dbModel = await dbContext.FindAsync<DataAccess.Models.Colour>(identifier);
         if (dbModel is null)

@@ -7,7 +7,7 @@ namespace MecatolArchives.ApiService.Client
 {
     public sealed class ColourControllerClient(HttpClient httpClient, JsonSerializerOptions jsonOptions)
     {
-        public async Task<Colour> CreateColourAsync(CreateColourRequest request, CancellationToken cancellationToken = default)
+        public async Task<Colour> CreateColourAsync(ColourCreateRequest request, CancellationToken cancellationToken = default)
         {
             var requestContent =    JsonContent.Create(request);
             var response = await httpClient.PostAsync($"/api/colours", requestContent, cancellationToken);
@@ -35,7 +35,7 @@ namespace MecatolArchives.ApiService.Client
             return content ?? throw new NullReferenceException();
         }
 
-        public async Task<Colour> UpdateColourAsync(Guid identifier, CreateColourRequest request, CancellationToken cancellationToken = default)
+        public async Task<Colour> UpdateColourAsync(Guid identifier, ColourCreateRequest request, CancellationToken cancellationToken = default)
         {
             var requestContent = JsonContent.Create(request);
             var response = await httpClient.PostAsync($"/api/colours/{identifier}", requestContent, cancellationToken);

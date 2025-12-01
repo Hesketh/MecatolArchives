@@ -10,10 +10,8 @@ public static class QueryParametersExtensions
         public string ToQueryString()
         {
             var sb = new StringBuilder();
-            if (queryParameters.Page != null)
-            {
-                sb.Append($"Page.Number={queryParameters.Page.Number}&Page.Size={queryParameters.Page.Size}&");
-            }
+
+            sb.Append($"pageNumber={queryParameters.PageNumber}&pageSize={queryParameters.PageSize}&");
 
             if (sb.Length > 0)
             {

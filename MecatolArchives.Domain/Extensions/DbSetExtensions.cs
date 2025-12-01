@@ -11,8 +11,8 @@ internal static class DbSetExtensions
         {
             return queryable
                 .AsNoTracking()
-                .Skip((query.Page.Number - 1) * query.Page.Size)
-                .Take(query.Page.Size);
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize);
         }
     }
 }

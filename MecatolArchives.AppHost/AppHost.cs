@@ -6,6 +6,7 @@ var db = sql.AddDatabase("MecatolArchives");
 
 var apiService = builder.AddProject<Projects.MecatolArchives_ApiService>("apiservice")
     .WithExternalHttpEndpoints()
+    .WithUrl("/api")
     .WithHttpHealthCheck("/health")
     .WithReference(db)
     .WaitFor(db);

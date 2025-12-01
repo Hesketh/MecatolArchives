@@ -1,8 +1,7 @@
 using MecatolArchives.ApiService.Filters;
 using MecatolArchives.Domain.Extensions;
 using MecatolArchives.ServiceDefaults;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Identity.Web;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +9,7 @@ builder.AddServiceDefaults();
 
 builder.Services.AddProblemDetails();
 
-builder.Services.AddOpenApi("mecatol_archives");
+builder.Services.AddOpenApi();
 
 builder.Services.AddControllers(options =>
 {
@@ -18,9 +17,6 @@ builder.Services.AddControllers(options =>
 });
 
 builder.Services.AddDomainServices(builder.Configuration);
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration);
 
 var app = builder.Build();
 
@@ -33,10 +29,11 @@ app.MapOpenApi();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwaggerUI(x =>
+    app.MapScalarApiReference("api", options =>
     {
-        x.SwaggerEndpoint("/openapi/mecatol_archives.json", "Mecatol Archives API");
-        x.DocumentTitle = "Mecatol Archives API Documentation";
+        options.Title = "Mecatol Archives API";
+        options.Telemetry = false;
+        options.ShowDeveloperTools = DeveloperToolsVisibility.Never;
     });
 }
 
