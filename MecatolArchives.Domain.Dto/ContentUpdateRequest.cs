@@ -1,6 +1,6 @@
 ﻿namespace MecatolArchives.Domain.Dto;
 
-public sealed record PersonUpdateRequest
+public sealed record ContentUpdateRequest
 {
     public string? Name { get; set; }
 }

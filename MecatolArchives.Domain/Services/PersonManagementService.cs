@@ -8,7 +8,7 @@ public sealed class PersonManagementService(MecatolArchivesDbContext dbContext)
 {
     protected override Person MapToDto(DataAccess.Models.Person dbModel)
     {
-        return new Person()
+        return new Person
         {
             Identifier = dbModel.Identifier,
             Name = dbModel.Name
@@ -26,7 +26,11 @@ public sealed class PersonManagementService(MecatolArchivesDbContext dbContext)
 
     protected override DataAccess.Models.Person MapToDb(DataAccess.Models.Person dbModel, PersonUpdateRequest update)
     {
-        dbModel.Name = update.Name;
+        if (update.Name != null)
+        {
+            dbModel.Name = update.Name;
+        }
+
         return dbModel;
     }
 }
