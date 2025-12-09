@@ -69,11 +69,15 @@ internal sealed class ColourManagementService(MecatolArchivesDbContext dbContext
 
     public async Task DeleteColourAsync(Guid identifier)
     {
-        var dbModel = await dbContext.FindAsync<DataAccess.Models.Colour>(identifier);
-        if (dbModel == null)
-            return;
+        var colour = new DataAccess.Models.Colour { Identifier = identifier };
+        dbContext.Attach(colour);
+        dbContext.Remove(colour);
 
-        dbContext.Remove(dbModel);
+        //var dbModel = await dbContext.FindAsync<DataAccess.Models.Colour>(identifier);
+        //if (dbModel == null)
+            //return;
+
+        //dbContext.Remove(dbModel);
 
         await dbContext.SaveChangesAsync();
     }

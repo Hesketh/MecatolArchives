@@ -47,7 +47,7 @@ namespace MecatolArchives.ApiService.Client
 
         public async Task DeleteColourAsync(Guid identifier, CancellationToken cancellationToken = default)
         {
-            var response = await httpClient.GetAsync($"/api/colours/{identifier}", cancellationToken);
+            var response = await httpClient.DeleteAsync($"/api/colours/{identifier}", cancellationToken);
             response.EnsureSuccessStatusCode();
         }
     }

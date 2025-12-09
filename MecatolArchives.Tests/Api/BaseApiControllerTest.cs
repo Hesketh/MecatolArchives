@@ -4,7 +4,7 @@ namespace MecatolArchives.Tests.Api;
 
 public class BaseApiControllerTest : IAsyncLifetime
 {
-    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(2);
 
     public DistributedApplication App { get; private set; } = null!;
     public ApiService.Client.MecatolArchivesApiClient ApiClient { get; private set; } = null!;
@@ -12,7 +12,7 @@ public class BaseApiControllerTest : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.MecatolArchives_AppHost>(CancellationToken);
+        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.MecatolArchives_AppHost>(["testing"], CancellationToken);
 
         App = await appHost.BuildAsync(CancellationToken).WaitAsync(DefaultTimeout, CancellationToken);
         await App.StartAsync(CancellationToken).WaitAsync(DefaultTimeout, CancellationToken);

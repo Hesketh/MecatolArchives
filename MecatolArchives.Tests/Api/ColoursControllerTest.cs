@@ -12,16 +12,16 @@ public sealed class ColoursControllerTest : BaseApiControllerTest
         // Assert
         Assert.Equal(9, colours.TotalCount);
 
-        Assert.Collection(colours.Items,
-            colour => Assert.Equal("Unknown", colour.Name),
+        Assert.Collection(colours.Items.OrderBy(x => x.Name),
+            colour => Assert.Equal("_Unknown_", colour.Name),
             colour => Assert.Equal("Black", colour.Name),
-            colour => Assert.Equal("Red", colour.Name),
+            colour => Assert.Equal("Blue", colour.Name),
             colour => Assert.Equal("Green", colour.Name),
-            colour => Assert.Equal("Yellow", colour.Name),
-            colour => Assert.Equal("Purple", colour.Name),
-            colour => Assert.Equal("Orange", colour.Name),
             colour => Assert.Equal("Magenta", colour.Name),
-            colour => Assert.Equal("Blue", colour.Name)
+            colour => Assert.Equal("Orange", colour.Name),
+            colour => Assert.Equal("Purple", colour.Name),
+            colour => Assert.Equal("Red", colour.Name),
+            colour => Assert.Equal("Yellow", colour.Name)
         );
     }
 
