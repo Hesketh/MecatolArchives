@@ -5,7 +5,7 @@ namespace MecatolArchives.Tests.Api;
 public sealed class ColoursControllerTest : BaseApiControllerTest
 {
     [Fact]
-    public async Task ReadColoursTest()
+    public async Task ReadColours_ReturnsExpectedSeededData()
     {
         var colours = await ApiClient.Colours.ReadColoursAsync(new(), CancellationToken);
 
@@ -26,25 +26,38 @@ public sealed class ColoursControllerTest : BaseApiControllerTest
     }
 
     [Fact]
-    public async Task CreateColourTest()
+    public async Task CreateColour_ValidColour_CreatesExpected()
     {
         var colour = await ApiClient.Colours.CreateColourAsync(new()
         {
-            Name = nameof(CreateColourTest),
+            Name = nameof(CreateColour_ValidColour_CreatesExpected),
             Hex = "#123456"
         }, CancellationToken);
 
         // Assert
-        Assert.Equal(nameof(CreateColourTest), colour.Name);
+        Assert.Equal(nameof(CreateColour_ValidColour_CreatesExpected), colour.Name);
         Assert.Equal("#123456", colour.Hex);
     }
 
     [Fact]
-    public async Task DeleteColourTest()
+    public async Task CreateColour_InvalidColour_Throws400()
+    {
+        await Assert.ThrowsAsync<HttpRequestException>(async () =>
+        {
+            var colour = await ApiClient.Colours.CreateColourAsync(new()
+            {
+                Name = null,
+                Hex = null,
+            }, CancellationToken);
+        });
+    }
+
+    [Fact]
+    public async Task DeleteColour_ValidColour_DeletesExpected()
     {
         var colour = await ApiClient.Colours.CreateColourAsync(new()
         {
-            Name = nameof(DeleteColourTest),
+            Name = nameof(DeleteColour_ValidColour_DeletesExpected),
             Hex = "#123456"
         }, CancellationToken);
 
@@ -54,5 +67,14 @@ public sealed class ColoursControllerTest : BaseApiControllerTest
         {
             var res = await ApiClient.Colours.ReadColourAsync(colour.Identifier, CancellationToken);
         });
+    }
+
+    [Fact]
+    public async Task DeleteColour_InvalidColour_DeletesExpected()
+    {
+        var guid = Guid.NewGuid();
+
+        // Should not throw
+        await ApiClient.Colours.DeleteColourAsync(guid, CancellationToken);
     }
 }
