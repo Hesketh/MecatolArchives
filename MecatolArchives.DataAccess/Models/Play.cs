@@ -11,7 +11,7 @@ public class Play
     public string? Map { get; set; } = null;
 
     public virtual ICollection<Player> Players { get; set; } = null!;
-    public virtual ICollection<Expansion> Expansions { get; set; } = null!;
+    public virtual ICollection<Content> Expansions { get; set; } = null!;
     public virtual ICollection<Variant> Variants { get; set; } = null!;
 
     [Key]

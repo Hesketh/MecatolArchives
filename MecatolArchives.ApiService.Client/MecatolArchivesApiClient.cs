@@ -11,4 +11,7 @@ public sealed class MecatolArchivesApiClient(HttpClient httpClient)
 
     public ColourControllerClient Colours => new(httpClient, JsonOptions);
     public PersonControllerClient People => new(httpClient, JsonOptions);
+    public FactionControllerClient Factions => new(httpClient, JsonOptions);
+    public ContentControllerClient Contents => new(httpClient, JsonOptions);
+    public VariantControllerClient Variants => new(httpClient, JsonOptions);
 }

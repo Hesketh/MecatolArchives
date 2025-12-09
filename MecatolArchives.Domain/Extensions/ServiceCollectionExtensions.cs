@@ -23,6 +23,9 @@ public static class ServiceCollectionExtensions
 
             services.AddScoped<IColourManagementService, ColourManagementService>();
             services.AddScoped<IPersonManagementService, PersonManagementService>();
+            services.AddScoped<IFactionManagementService, FactionManagementService>();
+            services.AddScoped<IContentManagementService, ContentManagementService>();
+            services.AddScoped<IVariantManagementService, VariantManagementService>();
 
             return services;
         }

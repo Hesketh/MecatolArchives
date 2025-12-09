@@ -12,7 +12,7 @@ public sealed class MecatolArchivesDbContext : DbContext
     }
 
     public DbSet<Colour> Colours { get; set; } = null!;
-    public DbSet<Expansion> Expansions { get; set; } = null!;
+    public DbSet<Content> Expansions { get; set; } = null!;
     public DbSet<Faction> Factions { get; set; } = null!;
     public DbSet<Person> People { get; set; } = null!;
     public DbSet<Play> Plays { get; set; } = null!;
@@ -55,27 +55,27 @@ public sealed class MecatolArchivesDbContext : DbContext
 
     private void SeedExpansions(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Expansion>().HasData(new Expansion
+        modelBuilder.Entity<Content>().HasData(new Content
         {
             Identifier = Guid.Parse("fb08d4e6-5ac1-4cbf-8eb9-166f6c5e41f0"),
             Name = "Prophecy of Kings"
-        }, new Expansion
+        }, new Content
         {
             Identifier = Guid.Parse("21fbcaf7-ae17-4db7-851a-dc65eb3ba60f"),
             Name = "Codex I: Ordinian"
-        }, new Expansion
+        }, new Content
         {
             Identifier = Guid.Parse("9420502f-4ef0-4887-add4-3d8a4941016a"),
             Name = "Codex II: Affinity"
-        }, new Expansion
+        }, new Content
         {
             Identifier = Guid.Parse("1eb732ba-74ac-4993-943e-cd6f3650d310"),
             Name = "Codex III: Vigil"
-        }, new Expansion
+        }, new Content
         {
             Identifier = Guid.Parse("2b7c9cd6-a7d8-40f1-843d-8f10c7c45fb3"),
             Name = "Omega Initiative I"
-        }, new Expansion
+        }, new Content
         {
             Identifier = Guid.Parse("0e886b80-9ef3-48c0-bfc5-8107ee183c1b"),
             Name = "Omega Initiative II"

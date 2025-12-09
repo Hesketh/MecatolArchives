@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MecatolArchives.DataAccess.Models;
 
-public class Expansion 
+public class Content 
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
