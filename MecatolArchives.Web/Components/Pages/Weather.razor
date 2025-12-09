@@ -43,6 +43,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        test = await Api.Colours.ReadColoursAsync(new Domain.Dto.QueryParameters());
+        test = await Api.Colours.ReadAsync(new Domain.Dto.QueryParameters());
     }
 }

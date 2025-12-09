@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
             });
 
             services.AddScoped<IColourManagementService, ColourManagementService>();
+            services.AddScoped<IPersonManagementService, PersonManagementService>();
 
             return services;
         }

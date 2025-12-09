@@ -1,8 +1,8 @@
 ﻿using Aspire.Hosting;
 
-namespace MecatolArchives.Tests.Api;
+namespace MecatolArchives.Tests;
 
-public class BaseApiControllerTest : IAsyncLifetime
+public class AppHostFixture : IAsyncLifetime
 {
     private static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(2);
 
@@ -12,7 +12,7 @@ public class BaseApiControllerTest : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.MecatolArchives_AppHost>(["testing"], CancellationToken);
+        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.MecatolArchives_AppHost>([$"--testing=test-{Guid.NewGuid()}"], CancellationToken);
 
         App = await appHost.BuildAsync(CancellationToken).WaitAsync(DefaultTimeout, CancellationToken);
         await App.StartAsync(CancellationToken).WaitAsync(DefaultTimeout, CancellationToken);
@@ -28,3 +28,6 @@ public class BaseApiControllerTest : IAsyncLifetime
         await App.DisposeAsync();
     }
 }
+
+[CollectionDefinition(nameof(AppHostFixtureCollection))]
+public class AppHostFixtureCollection : ICollectionFixture<AppHostFixture> { }

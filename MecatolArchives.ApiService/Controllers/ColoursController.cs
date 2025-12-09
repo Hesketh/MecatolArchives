@@ -17,7 +17,7 @@ public class ColoursController(IColourManagementService colourManagementService)
     [EndpointDescription("Creates a new player game piece colour.")]
     public async Task<ActionResult<Colour>> Create(ColourCreateRequest model)
     {
-        return await colourManagementService.CreateColourAsync(model);
+        return await colourManagementService.CreateAsync(model);
     }
 
     [HttpGet("{identifier}")]
@@ -27,7 +27,7 @@ public class ColoursController(IColourManagementService colourManagementService)
     [EndpointDescription("Read the Colour with the matching identifier.")]
     public async Task<ActionResult<Colour>> Read(Guid identifier)
     {
-        return await colourManagementService.ReadColourAsync(identifier);
+        return await colourManagementService.ReadAsync(identifier);
     }
 
     [HttpGet]
@@ -37,7 +37,7 @@ public class ColoursController(IColourManagementService colourManagementService)
     [EndpointDescription("Read the Colours with a Paged Query.")]
     public async Task<ActionResult<QueriedCollection<Colour>>> Read([FromQuery] QueryParameters query)
     {
-        return await colourManagementService.ReadColoursAsync(query);
+        return await colourManagementService.ReadAsync(query);
     }
 
     [HttpPut("{identifier}")]
@@ -49,7 +49,7 @@ public class ColoursController(IColourManagementService colourManagementService)
     [EndpointDescription("Update the properties of an existing Colour with the matching identifier.")]
     public async Task<ActionResult<Colour>> Update(Guid identifier, ColourUpdateRequest model)
     {
-        return await colourManagementService.UpdateColourAsync(identifier, model);
+        return await colourManagementService.UpdateAsync(identifier, model);
     }
 
     [HttpDelete("{identifier}")]
@@ -59,7 +59,7 @@ public class ColoursController(IColourManagementService colourManagementService)
     [EndpointDescription("Delete the Colour with the matching identifier.")]
     public async Task<IActionResult> Delete(Guid identifier)
     {
-        await colourManagementService.DeleteColourAsync(identifier);
+        await colourManagementService.DeleteAsync(identifier);
         return Ok();
     }
 }

@@ -1,10 +1,15 @@
 
+using Aspire.Hosting;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 IResourceBuilder<SqlServerServerResource> sql;
-if (args.Any(x => x == "testing"))
+
+var testingArg = args.FirstOrDefault(x => x.StartsWith("--testing="));
+if (testingArg != null)
 {
-    sql = builder.AddSqlServer("test" + Guid.NewGuid().ToString());
+    var name = testingArg.Split('=')[1];
+    sql = builder.AddSqlServer(name);
 }
 else
 {
@@ -27,3 +32,4 @@ builder.AddProject<Projects.MecatolArchives_Web>("webfrontend")
     .WaitFor(apiService);
 
 builder.Build().Run();
+

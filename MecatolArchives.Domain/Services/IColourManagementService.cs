@@ -4,9 +4,9 @@ namespace MecatolArchives.Domain.Services;
 
 public interface IColourManagementService
 {
-    Task<Colour> CreateColourAsync(ColourCreateRequest request);
-    Task<QueriedCollection<Colour>> ReadColoursAsync(QueryParameters query);
-    Task<Colour> ReadColourAsync(Guid identifier);
-    Task<Colour> UpdateColourAsync(Guid identifier, ColourUpdateRequest request);
-    Task DeleteColourAsync(Guid identifier);
+    Task<Colour> CreateAsync(ColourCreateRequest request);
+    Task<QueriedCollection<Colour>> ReadAsync(QueryParameters query);
+    Task<Colour> ReadAsync(Guid identifier);
+    Task<Colour> UpdateAsync(Guid identifier, ColourUpdateRequest request);
+    Task DeleteAsync(Guid identifier);
 }
