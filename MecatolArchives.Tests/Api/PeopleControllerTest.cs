@@ -4,19 +4,12 @@ using System.Drawing;
 namespace MecatolArchives.Tests.Api;
 
 [Collection(nameof(AppHostFixtureCollection))]
-public sealed class PeopleControllerTest
+public sealed class PeopleControllerTest(AppHostFixture appHostFixture)
 {
-    private readonly AppHostFixture _fixture;
-
-    public PeopleControllerTest(AppHostFixture appHostFixture)
-    {
-        _fixture = appHostFixture;
-    }
-
     [Fact]
     public async Task ReadPeople_ReturnsExpectedSeededData()
     {
-        var people = await _fixture.ApiClient.People.ReadAsync(new QueryParameters(), _fixture.CancellationToken);
+        var people = await appHostFixture.ApiClient.People.ReadAsync(new QueryParameters(), appHostFixture.CancellationToken);
 
         // Assert
         Assert.Equal(0, people.TotalCount);
@@ -25,10 +18,10 @@ public sealed class PeopleControllerTest
     [Fact]
     public async Task CreatePerson_ValidPerson_CreatesExpected()
     {
-        var person = await _fixture.ApiClient.People.CreateAsync(new()
+        var person = await appHostFixture.ApiClient.People.CreateAsync(new()
         {
             Name = nameof(CreatePerson_ValidPerson_CreatesExpected),
-        }, _fixture.CancellationToken);
+        }, appHostFixture.CancellationToken);
 
         // Assert
         Assert.Equal(nameof(CreatePerson_ValidPerson_CreatesExpected), person.Name);
@@ -39,26 +32,26 @@ public sealed class PeopleControllerTest
     {
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-            var person = await _fixture.ApiClient.People.CreateAsync(new()
+            var person = await appHostFixture.ApiClient.People.CreateAsync(new()
             {
                 Name = null!,
-            }, _fixture.CancellationToken);
+            }, appHostFixture.CancellationToken);
         });
     }
 
     [Fact]
     public async Task DeletePerson_ValidPerson_DeletesExpected()
     {
-        var person = await _fixture.ApiClient.People.CreateAsync(new()
+        var person = await appHostFixture.ApiClient.People.CreateAsync(new()
         {
             Name = nameof(DeletePerson_ValidPerson_DeletesExpected),
-        }, _fixture.CancellationToken);
+        }, appHostFixture.CancellationToken);
 
-        await _fixture.ApiClient.People.DeleteAsync(person.Identifier, _fixture.CancellationToken);
+        await appHostFixture.ApiClient.People.DeleteAsync(person.Identifier, appHostFixture.CancellationToken);
 
         var exception = await Assert.ThrowsAsync<HttpRequestException>((Func<Task>)(async () =>
         {
-            var res = await _fixture.ApiClient.People.ReadAsync(person.Identifier, _fixture.CancellationToken);
+            var res = await appHostFixture.ApiClient.People.ReadAsync(person.Identifier, appHostFixture.CancellationToken);
         }));
     }
 
@@ -68,6 +61,6 @@ public sealed class PeopleControllerTest
         var guid = Guid.NewGuid();
 
         // Should not throw
-        await _fixture.ApiClient.People.DeleteAsync(guid, _fixture.CancellationToken);
+        await appHostFixture.ApiClient.People.DeleteAsync(guid, appHostFixture.CancellationToken);
     }
 }

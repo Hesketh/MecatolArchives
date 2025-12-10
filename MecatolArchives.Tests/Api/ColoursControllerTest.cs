@@ -4,19 +4,12 @@ using System.Drawing;
 namespace MecatolArchives.Tests.Api;
 
 [Collection(nameof(AppHostFixtureCollection))]
-public sealed class ColoursControllerTest 
+public sealed class ColoursControllerTest(AppHostFixture appHostFixture)
 {
-    private readonly AppHostFixture _fixture;
-
-    public ColoursControllerTest(AppHostFixture appHostFixture)
-    {
-        _fixture = appHostFixture;
-    }
-
     [Fact]
     public async Task ReadColours_ReturnsExpectedSeededData()
     {
-        var colours = await _fixture.ApiClient.Colours.ReadAsync((Domain.Dto.QueryParameters)new(), _fixture.CancellationToken);
+        var colours = await appHostFixture.ApiClient.Colours.ReadAsync((Domain.Dto.QueryParameters)new(), appHostFixture.CancellationToken);
 
         // Assert
         Assert.Equal(9, colours.TotalCount);
@@ -37,11 +30,11 @@ public sealed class ColoursControllerTest
     [Fact]
     public async Task CreateColour_ValidColour_CreatesExpected()
     {
-        var colour = await _fixture.ApiClient.Colours.CreateAsync(new()
+        var colour = await appHostFixture.ApiClient.Colours.CreateAsync(new()
         {
             Name = nameof(CreateColour_ValidColour_CreatesExpected),
             Hex = "#123456"
-        }, _fixture.CancellationToken);
+        }, appHostFixture.CancellationToken);
 
         // Assert
         Assert.Equal(nameof(CreateColour_ValidColour_CreatesExpected), colour.Name);
@@ -53,28 +46,28 @@ public sealed class ColoursControllerTest
     {
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-            var colour = await _fixture.ApiClient.Colours.CreateAsync(new()
+            var colour = await appHostFixture.ApiClient.Colours.CreateAsync(new()
             {
                 Name = null!,
                 Hex = null!
-            }, _fixture.CancellationToken);
+            }, appHostFixture.CancellationToken);
         });
     }
 
     [Fact]
     public async Task DeleteColour_ValidColour_DeletesExpected()
     {
-        var colour = await _fixture.ApiClient.Colours.CreateAsync(new()
+        var colour = await appHostFixture.ApiClient.Colours.CreateAsync(new()
         {
             Name = nameof(DeleteColour_ValidColour_DeletesExpected),
             Hex = "#123456"
-        }, _fixture.CancellationToken);
+        }, appHostFixture.CancellationToken);
 
-        await _fixture.ApiClient.Colours.DeleteAsync(colour.Identifier, _fixture.CancellationToken);
+        await appHostFixture.ApiClient.Colours.DeleteAsync(colour.Identifier, appHostFixture.CancellationToken);
 
         var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-            var res = await _fixture.ApiClient.Colours.ReadAsync(colour.Identifier, _fixture.CancellationToken);
+            var res = await appHostFixture.ApiClient.Colours.ReadAsync(colour.Identifier, appHostFixture.CancellationToken);
         });
     }
 
@@ -84,6 +77,6 @@ public sealed class ColoursControllerTest
         var guid = Guid.NewGuid();
 
         // Should not throw
-        await _fixture.ApiClient.Colours.DeleteAsync(guid, _fixture.CancellationToken);
+        await appHostFixture.ApiClient.Colours.DeleteAsync(guid, appHostFixture.CancellationToken);
     }
 }

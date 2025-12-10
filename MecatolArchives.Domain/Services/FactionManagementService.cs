@@ -12,7 +12,7 @@ public sealed class FactionManagementService(MecatolArchivesDbContext dbContext)
         {
             Identifier = dbModel.Identifier,
             Name = dbModel.Name,
-            Url = dbModel.Link ?? string.Empty
+            Url = dbModel.Url ?? string.Empty
         };
     }
 
@@ -22,7 +22,7 @@ public sealed class FactionManagementService(MecatolArchivesDbContext dbContext)
         {
             Identifier = Guid.NewGuid(),
             Name = create.Name,
-            Link = create.Url
+            Url = create.Url
         };
     }
 
@@ -35,7 +35,7 @@ public sealed class FactionManagementService(MecatolArchivesDbContext dbContext)
 
         if (update.Url != null)
         {
-            dbModel.Link = update.Url;
+            dbModel.Url = update.Url;
         }
 
         return dbModel;

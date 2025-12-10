@@ -10,6 +10,6 @@ public class Faction
     public Guid Identifier { get; set; }
 
     public string Name { get; set; } = null!;
-    public string? Link { get; set; } = null;
+    public string? Url { get; set; } = null;
     public bool HideFromStatistics { get; set; } = false;
 }
