@@ -8,6 +8,8 @@ public class Play
     public DateTime UtcDate { get; set; } = DateTime.UtcNow;
     public double RulesVersion { get; set; } = 1.0;
     public uint PointGoal { get; set; } = 10;
+
+    [MaxLength(500)]
     public string? Map { get; set; } = null;
 
     public virtual ICollection<Player> Players { get; set; } = null!;

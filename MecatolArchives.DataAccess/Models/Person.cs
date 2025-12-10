@@ -9,8 +9,9 @@ public class Person
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Identifier { get; set; }
 
+    [MaxLength(100)]
     public string Name { get; set; } = null!;
-    public bool HideFromStatistics { get; set; } = false;
+    public bool Active { get; set; } = false;
 
     public virtual Colour? DefaultColour { get; set; } = null;
 }

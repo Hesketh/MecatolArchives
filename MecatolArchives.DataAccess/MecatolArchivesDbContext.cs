@@ -18,6 +18,7 @@ public sealed class MecatolArchivesDbContext : DbContext
     public DbSet<Play> Plays { get; set; } = null!;
     public DbSet<Player> Players { get; set; } = null!;
     public DbSet<Variant> Variants { get; set; } = null!;
+    public DbSet<FactionVariant> FactionVariants { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -115,11 +116,18 @@ public sealed class MecatolArchivesDbContext : DbContext
 
     private void SeedFactions(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Faction>().HasData(new Faction
+        var theCouncilKeleres = new Faction
+        {
+            Identifier = Guid.Parse("51ee1c82-279b-444c-a6aa-a8cd475612fd"),
+            Name = "The Council Keleres",
+            Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres"
+        };
+
+        modelBuilder.Entity<Faction>().HasData(theCouncilKeleres, new Faction
         {
             Identifier = Guid.Parse("609382d1-c969-4144-916a-ad4c13df1352"),
             Name = UnknownName,
-            HideFromStatistics = true,
+            Active = true,
         }, new Faction
         {
             Identifier = Guid.Parse("11ee6931-58d5-4808-b2c5-e3d4b7bf4343"),
@@ -240,11 +248,6 @@ public sealed class MecatolArchivesDbContext : DbContext
             Identifier = Guid.Parse("91da5e70-a3db-4168-b18d-61ae7b899b48"),
             Name = "The Vuil'Raith Cabal",
             Url = "https://twilight-imperium.fandom.com/wiki/The_Vuil%27Raith_Cabal"
-        }, new Faction
-        {
-            Identifier = Guid.Parse("51ee1c82-279b-444c-a6aa-a8cd475612fd"),
-            Name = "The Council Keleres",
-            Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres"
         }, new Faction // Additional Factions from Thunder's Edge
         {
             Identifier = Guid.Parse("fcbf11ee-afe1-44aa-abd0-497d0baa1ee8"),
@@ -440,6 +443,23 @@ public sealed class MecatolArchivesDbContext : DbContext
             Identifier = Guid.Parse("c6d61222-b5c5-5162-0603-4e1121324354"),
             Name = "The Nokar Sellships",
             Url = "https://twilight-imperium.fandom.com/wiki/Nokar_Sellships_(UNOFFICIAL)"
+        });
+
+        modelBuilder.Entity<FactionVariant>().HasData(new FactionVariant
+        {
+            Identifier = Guid.Parse("3852bc1c-57d8-44fc-932f-9216c8eebdba"),
+            Name = "The Mentak Coalition",
+            Faction = theCouncilKeleres
+        }, new FactionVariant
+        {
+            Identifier = Guid.Parse("9c01e321-475d-447e-9d5a-e8d6b11ea828"),
+            Name = "The Xxcha Kingdom",
+            Faction = theCouncilKeleres
+        }, new FactionVariant
+        {
+            Identifier = Guid.Parse("f487ab41-107f-4a08-8a3c-5f8eade06e2c"),
+            Name = "The Argent Flight",
+            Faction = theCouncilKeleres
         });
     }
 

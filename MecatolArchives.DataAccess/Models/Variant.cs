@@ -9,7 +9,8 @@ public class Variant
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Identifier { get; set; }
 
+    [MaxLength(100)]
     public string Name { get; set; } = null!;
-    
+
     public virtual ICollection<Play> Plays { get; set; } = null!;
 }

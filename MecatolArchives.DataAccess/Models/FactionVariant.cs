@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MecatolArchives.DataAccess.Models;
 
-public class Colour 
+public class FactionVariant
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,7 +12,5 @@ public class Colour
     [MaxLength(100)]
     public string Name { get; set; } = null!;
 
-    [MaxLength(7)]
-    // #RRGGBB (Includes the #)
-    public string Hex { get; set; } = null!;
+    public virtual Faction? Faction { get; set; } = null;
 }
