@@ -12,5 +12,7 @@ public class FactionVariant
     [MaxLength(100)]
     public string Name { get; set; } = null!;
 
-    public virtual Faction? Faction { get; set; } = null;
+    [ForeignKey(nameof(Faction))]
+    public Guid FactionIdentifier { get; set; }
+    public virtual Faction Faction { get; set; } = null!;
 }

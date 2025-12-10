@@ -449,17 +449,17 @@ public sealed class MecatolArchivesDbContext : DbContext
         {
             Identifier = Guid.Parse("3852bc1c-57d8-44fc-932f-9216c8eebdba"),
             Name = "The Mentak Coalition",
-            Faction = theCouncilKeleres
+            FactionIdentifier = theCouncilKeleres.Identifier
         }, new FactionVariant
         {
             Identifier = Guid.Parse("9c01e321-475d-447e-9d5a-e8d6b11ea828"),
             Name = "The Xxcha Kingdom",
-            Faction = theCouncilKeleres
+            FactionIdentifier = theCouncilKeleres.Identifier
         }, new FactionVariant
         {
             Identifier = Guid.Parse("f487ab41-107f-4a08-8a3c-5f8eade06e2c"),
             Name = "The Argent Flight",
-            Faction = theCouncilKeleres
+            FactionIdentifier = theCouncilKeleres.Identifier
         });
     }
 

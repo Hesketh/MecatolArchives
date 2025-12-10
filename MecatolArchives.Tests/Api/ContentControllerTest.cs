@@ -12,9 +12,9 @@ public sealed class ContentsControllerTest(AppHostFixture appHostFixture)
         var contents = await appHostFixture.ApiClient.Contents.ReadAsync(new QueryParameters(), appHostFixture.CancellationToken);
 
         // Assert
-        Assert.Equal(9, colours.TotalCount);
+        Assert.Equal(9, contents.TotalCount);
 
-        Assert.Collection(colours.Items.OrderBy(x => x.Name),
+        Assert.Collection(contents.Items.OrderBy(x => x.Name),
             colour => Assert.Equal("_Unknown_", colour.Name),
             colour => Assert.Equal("Black", colour.Name),
             colour => Assert.Equal("Blue", colour.Name),
