@@ -1,5 +1,7 @@
 ﻿using MecatolArchives.Domain.Dto;
 using System.Drawing;
+using AwesomeAssertions;
+using AwesomeAssertions.Collections;
 
 namespace MecatolArchives.Tests.Api;
 
@@ -11,20 +13,58 @@ public sealed class ContentsControllerTest(AppHostFixture appHostFixture)
     {
         var contents = await appHostFixture.ApiClient.Contents.ReadAsync(new QueryParameters(), appHostFixture.CancellationToken);
 
-        // Assert
-        Assert.Equal(9, contents.TotalCount);
+        // Arrange
+        Content[] expected =
+        [
+            new Content
+            {
+                Identifier = Guid.Parse("fb08d4e6-5ac1-4cbf-8eb9-166f6c5e41f0"),
+                Name = "Prophecy of Kings"
+            },
+            new Content
+            {
+                Identifier = Guid.Parse("5615f96a-cce5-41a6-90d8-91aed8cd1645"),
+                Name = "Thunder's Edge"
+            },
+            new Content
+            {
+                Identifier = Guid.Parse("21fbcaf7-ae17-4db7-851a-dc65eb3ba60f"),
+                Name = "Codex I: Ordinian"
+            },
+            new Content
+            {
+                Identifier = Guid.Parse("9420502f-4ef0-4887-add4-3d8a4941016a"),
+                Name = "Codex II: Affinity"
+            },
+            new Content
+            {
+                Identifier = Guid.Parse("1eb732ba-74ac-4993-943e-cd6f3650d310"),
+                Name = "Codex III: Vigil"
+            },
+            new Content
+            {
+                Identifier = Guid.Parse("f77349c8-dc28-424a-b0bc-16057f15d18e"),
+                Name = "Codex IV: Liberation"
+            },
+            new Content
+            {
+                Identifier = Guid.Parse("69996b68-7083-43db-ba63-efffb80df833"),
+                Name = "Absol's Agendas & Relics"
+            },
+            new Content
+            {
+                Identifier = Guid.Parse("7606e091-1f8d-4e58-8d48-8c93dc65b9ad"),
+                Name = "Discordant Stars"
+            },
+            new Content
+            {
+                Identifier = Guid.Parse("dfaeec44-34c8-4bad-94c2-0f69b9e27f87"),
+                Name = "Uncharted Space"
+            }
+        ];
 
-        Assert.Collection(contents.Items.OrderBy(x => x.Name),
-            colour => Assert.Equal("_Unknown_", colour.Name),
-            colour => Assert.Equal("Black", colour.Name),
-            colour => Assert.Equal("Blue", colour.Name),
-            colour => Assert.Equal("Green", colour.Name),
-            colour => Assert.Equal("Magenta", colour.Name),
-            colour => Assert.Equal("Orange", colour.Name),
-            colour => Assert.Equal("Purple", colour.Name),
-            colour => Assert.Equal("Red", colour.Name),
-            colour => Assert.Equal("Yellow", colour.Name)
-        );
+        // Assert
+        contents.Items.Should().Contain(expected);
     }
 
     [Fact]

@@ -24,7 +24,7 @@ public sealed class MecatolArchivesDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        SeedExpansions(modelBuilder);
+        SeedContents(modelBuilder);
         SeedColours(modelBuilder);
         SeedFactions(modelBuilder);
         SeedVariants(modelBuilder);
@@ -70,7 +70,7 @@ public sealed class MecatolArchivesDbContext : DbContext
         });
     }
 
-    private void SeedExpansions(ModelBuilder modelBuilder)
+    private void SeedContents(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Content>().HasData(new Content
         {
