@@ -1,7 +1,4 @@
-﻿using MecatolArchives.Domain.Dto;
-using System.Drawing;
-
-namespace MecatolArchives.Tests.Api;
+﻿namespace MecatolArchives.Tests.Api;
 
 [Collection(nameof(AppHostFixtureCollection))]
 public sealed class PeopleControllerTest(AppHostFixture appHostFixture)

@@ -1,30 +1,79 @@
-﻿using MessagePack.Formatters;
-using System.Drawing;
-
-namespace MecatolArchives.Tests.Api;
+﻿namespace MecatolArchives.Tests.Api;
 
 [Collection(nameof(AppHostFixtureCollection))]
+[TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public sealed class ColoursControllerTest(AppHostFixture appHostFixture)
 {
-    [Fact]
+    [Fact, Priority(-10)]
     public async Task ReadColours_ReturnsExpectedSeededData()
     {
-        var colours = await appHostFixture.ApiClient.Colours.ReadAsync((Domain.Dto.QueryParameters)new(), appHostFixture.CancellationToken);
+        List<Colour> expected =
+        [
+            new()
+            {
+                Identifier = Guid.Parse("CBDFDDA9-13BF-4A45-BE5D-0882F6DCBAD8"),
+                Hex = string.Empty,
+                Name = "_Unknown_"
+            },
+            new()
+            {
+                Identifier = Guid.Parse("564F166E-33CB-45CC-BCA6-1B2D16B8BF60"),
+                Hex = "#000000",
+                Name = "Black"
+            },
+            new()
+            {
+                Identifier = Guid.Parse("53BF36A1-669C-41ED-9CED-4FA94BA038EE"),
+                Hex = "#FF0000",
+                Name = "Red"
+            },
+            new()
+            {
+                Identifier = Guid.Parse("E8CA7B27-00CD-4A2A-BC7F-17105E690E2D"),
+                Hex = "#008000",
+                Name = "Green"
+            },
+            new()
+            {
+                Identifier = Guid.Parse("51B6CC96-0E35-48F9-8665-B50BBE3FDB44"),
+                Hex = "#FFFF00",
+                Name = "Yellow"
+            },
+            new()
+            {
+                Identifier = Guid.Parse("A9C3B568-D781-452D-91AE-44B0CC8E7020"),
+                Hex = "#800080",
+                Name = "Purple"
+            },
+            new()
+            {
+                Identifier = Guid.Parse("43C078A5-0561-40F0-8ADC-92AFA32EAEB0"),
+                Hex = "#FFA500",
+                Name = "Orange"
+            },
+            new()
+            {
+                Identifier = Guid.Parse("DACEDA53-E450-4FCE-82D4-EF1CDD312E38"),
+                Hex = "#FF00FF",
+                Name = "Magenta"
+            },
+            new()
+            {
+                Identifier = Guid.Parse("08DDEF19-BD82-4EDA-B245-5E84E8DA38D9"),
+                Hex = "#FFFFFF",
+                Name = "White"
+            },
+            new()
+            {
+                Identifier = Guid.Parse("B5616B41-2821-4A27-85DC-FA81B899E578"),
+                Hex = "#0000FF",
+                Name = "Blue"
+            }
+        ];
 
-        // Assert
-        Assert.Equal(9, colours.TotalCount);
+        var colours = await appHostFixture.ApiClient.Colours.ReadAsync(new QueryParameters { PageSize = expected.Count }, appHostFixture.CancellationToken);
 
-        Assert.Collection(colours.Items.OrderBy(x => x.Name),
-            colour => Assert.Equal("_Unknown_", colour.Name),
-            colour => Assert.Equal("Black", colour.Name),
-            colour => Assert.Equal("Blue", colour.Name),
-            colour => Assert.Equal("Green", colour.Name),
-            colour => Assert.Equal("Magenta", colour.Name),
-            colour => Assert.Equal("Orange", colour.Name),
-            colour => Assert.Equal("Purple", colour.Name),
-            colour => Assert.Equal("Red", colour.Name),
-            colour => Assert.Equal("Yellow", colour.Name)
-        );
+        colours.Items.Should().Contain(expected);
     }
 
     [Fact]
