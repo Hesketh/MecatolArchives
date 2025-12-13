@@ -13,7 +13,25 @@ public sealed class FactionsControllerTest(AppHostFixture appHostFixture)
             {
                 Identifier = Guid.Parse("51ee1c82-279b-444c-a6aa-a8cd475612fd"),
                 Name = "The Council Keleres",
-                Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres"
+                Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres",
+                Variants = 
+                [
+                    new FactionVariant
+                    {
+                        Identifier = Guid.Parse("3852bc1c-57d8-44fc-932f-9216c8eebdba"),
+                        Name = "The Mentak Coalition"
+                    }, 
+                    new FactionVariant
+                    {
+                        Identifier = Guid.Parse("9c01e321-475d-447e-9d5a-e8d6b11ea828"),
+                        Name = "The Xxcha Kingdom"
+                    }, 
+                    new FactionVariant
+                    {
+                        Identifier = Guid.Parse("f487ab41-107f-4a08-8a3c-5f8eade06e2c"),
+                        Name = "The Argent Flight"
+                    }
+                ]
             },
             new()
             {
@@ -424,7 +442,7 @@ public sealed class FactionsControllerTest(AppHostFixture appHostFixture)
     {
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-            var faction = await appHostFixture.ApiClient.Factions.CreateAsync(new()
+            await appHostFixture.ApiClient.Factions.CreateAsync(new()
             {
                 Name = null!,
             }, appHostFixture.CancellationToken);
@@ -441,9 +459,9 @@ public sealed class FactionsControllerTest(AppHostFixture appHostFixture)
 
         await appHostFixture.ApiClient.Factions.DeleteAsync(faction.Identifier, appHostFixture.CancellationToken);
 
-        var exception = await Assert.ThrowsAsync<HttpRequestException>((Func<Task>)(async () =>
+        await Assert.ThrowsAsync<HttpRequestException>((Func<Task>)(async () =>
         {
-            var res = await appHostFixture.ApiClient.Factions.ReadAsync(faction.Identifier, appHostFixture.CancellationToken);
+            await appHostFixture.ApiClient.Factions.ReadAsync(faction.Identifier, appHostFixture.CancellationToken);
         }));
     }
 

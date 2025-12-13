@@ -7,26 +7,26 @@ internal sealed class ColourManagementService(MecatolArchivesDbContext dbContext
         : CRUDManagementServiceBase<DataAccess.Models.Colour, Colour, ColourCreateRequest, ColourUpdateRequest>(dbContext), IColourManagementService
 
 {
-    protected override Colour MapToDto(DataAccess.Models.Colour dbModel)
+    protected override Task<Colour> MapToDto(DataAccess.Models.Colour dbModel)
     {
-        return new Colour
+        return Task.FromResult(new Colour
         {
             Identifier = dbModel.Identifier,
             Name = dbModel.Name,
             Hex = dbModel.Hex
-        };
+        });
     }
 
-    protected override DataAccess.Models.Colour MapToDb(ColourCreateRequest create)
+    protected override Task<DataAccess.Models.Colour> MapToDb(ColourCreateRequest create)
     {
-        return new DataAccess.Models.Colour
+        return Task.FromResult(new DataAccess.Models.Colour
         {
             Name = create.Name,
             Hex = create.Hex
-        };
+        });
     }
 
-    protected override DataAccess.Models.Colour MapToDb(DataAccess.Models.Colour dbModel, ColourUpdateRequest update)
+    protected override Task<DataAccess.Models.Colour> MapToDb(DataAccess.Models.Colour dbModel, ColourUpdateRequest update)
     {
         if (update.Name != null)
         {
@@ -38,6 +38,6 @@ internal sealed class ColourManagementService(MecatolArchivesDbContext dbContext
             dbModel.Hex = update.Hex;
         }
 
-        return dbModel;
+        return Task.FromResult(dbModel);
     }
 }

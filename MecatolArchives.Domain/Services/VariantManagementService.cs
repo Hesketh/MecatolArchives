@@ -6,31 +6,31 @@ namespace MecatolArchives.Domain.Services;
 public sealed class VariantManagementService(MecatolArchivesDbContext dbContext)
     : CRUDManagementServiceBase<DataAccess.Models.Variant, Variant, VariantCreateRequest, VariantUpdateRequest>(dbContext), IVariantManagementService
 {
-    protected override Variant MapToDto(DataAccess.Models.Variant dbModel)
+    protected override Task<Variant> MapToDto(DataAccess.Models.Variant dbModel)
     {
-        return new Variant
+        return Task.FromResult(new Variant
         {
             Identifier = dbModel.Identifier,
             Name = dbModel.Name
-        };
+        });
     }
 
-    protected override DataAccess.Models.Variant MapToDb(VariantCreateRequest create)
+    protected override Task<DataAccess.Models.Variant> MapToDb(VariantCreateRequest create)
     {
-        return new DataAccess.Models.Variant
+        return Task.FromResult(new DataAccess.Models.Variant
         {
             Identifier = Guid.NewGuid(),
             Name = create.Name
-        };
+        });
     }
 
-    protected override DataAccess.Models.Variant MapToDb(DataAccess.Models.Variant dbModel, VariantUpdateRequest update)
+    protected override Task<DataAccess.Models.Variant> MapToDb(DataAccess.Models.Variant dbModel, VariantUpdateRequest update)
     {
         if (update.Name != null)
         {
             dbModel.Name = update.Name;
         }
 
-        return dbModel;
+        return Task.FromResult(dbModel);
     }
 }

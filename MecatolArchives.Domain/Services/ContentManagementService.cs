@@ -6,31 +6,31 @@ namespace MecatolArchives.Domain.Services;
 public sealed class ContentManagementService(MecatolArchivesDbContext dbContext)
     : CRUDManagementServiceBase<DataAccess.Models.Content, Content, ContentCreateRequest, ContentUpdateRequest>(dbContext), IContentManagementService
 {
-    protected override Content MapToDto(DataAccess.Models.Content dbModel)
+    protected override Task<Content> MapToDto(DataAccess.Models.Content dbModel)
     {
-        return new Content
+        return Task.FromResult(new Content
         {
             Identifier = dbModel.Identifier,
             Name = dbModel.Name,
-        };
+        });
     }
 
-    protected override DataAccess.Models.Content MapToDb(ContentCreateRequest create)
+    protected override Task<DataAccess.Models.Content> MapToDb(ContentCreateRequest create)
     {
-        return new DataAccess.Models.Content
+        return Task.FromResult(new DataAccess.Models.Content
         {
             Identifier = Guid.NewGuid(),
             Name = create.Name,
-        };
+        });
     }
 
-    protected override DataAccess.Models.Content MapToDb(DataAccess.Models.Content dbModel, ContentUpdateRequest update)
+    protected override Task<DataAccess.Models.Content> MapToDb(DataAccess.Models.Content dbModel, ContentUpdateRequest update)
     {
         if (update.Name != null)
         {
             dbModel.Name = update.Name;
         }
 
-        return dbModel;
+        return Task.FromResult(dbModel);
     }
 }
