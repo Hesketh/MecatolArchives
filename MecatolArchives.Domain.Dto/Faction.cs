@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace MecatolArchives.Domain.Dto;
+﻿namespace MecatolArchives.Domain.Dto;
 
 public sealed record Faction
 {
@@ -8,5 +6,5 @@ public sealed record Faction
     public required string Name { get; set; }
     public required string Url { get; set; }
 
-    public List<FactionVariant> Variants { get; set; } = new();
+    public FactionVariants Variants { get; set; } = new([]);
 }

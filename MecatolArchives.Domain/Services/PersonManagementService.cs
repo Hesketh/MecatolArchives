@@ -3,8 +3,8 @@ using MecatolArchives.Domain.Dto;
 
 namespace MecatolArchives.Domain.Services;
 
-public sealed class PersonManagementService(MecatolArchivesDbContext dbContext)
-    : CRUDManagementServiceBase<DataAccess.Models.Person, Person, PersonCreateRequest, PersonUpdateRequest>(dbContext), IPersonManagementService
+public sealed class PersonManagementService(MecatolArchivesDbContext dbDbContext)
+    : CRUDManagementServiceBase<DataAccess.Models.Person, Person, PersonCreateRequest, PersonUpdateRequest>(dbDbContext), IPersonManagementService
 {
     protected override Task<Person> MapToDto(DataAccess.Models.Person dbModel)
     {

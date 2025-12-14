@@ -12,21 +12,23 @@ public abstract class CRUDManagementServiceBase<TDatabase, TDto, TCreateDto, TUp
     where TUpdateDto : class
     where TDatabase : class
 {
+    protected MecatolArchivesDbContext DbContext { get; } = dbContext;
+
     public async Task<TDto> CreateAsync(TCreateDto request)
     {
         var dbModel = await MapToDb(request);
 
-        var set = dbContext.Set<TDatabase>();
+        var set = DbContext.Set<TDatabase>();
         set.Add(dbModel);
 
-        await dbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
 
         return await MapToDto(dbModel);
     }
 
     public async Task<QueriedCollection<TDto>> ReadAsync(QueryParameters query)
     {
-        var set = dbContext.Set<TDatabase>();
+        var set = DbContext.Set<TDatabase>();
         var totalCount = await set.CountAsync();
         var items = await set.Query(query).ToListAsync();
 
@@ -43,7 +45,7 @@ public abstract class CRUDManagementServiceBase<TDatabase, TDto, TCreateDto, TUp
 
     public async Task<TDto> ReadAsync(Guid identifier)
     {
-        var dbModel = await dbContext.FindAsync<TDatabase>(identifier);
+        var dbModel = await DbContext.FindAsync<TDatabase>(identifier);
         if (dbModel is null)
             throw new EntityNotFoundException(typeof(TDatabase), identifier);
 
@@ -52,26 +54,26 @@ public abstract class CRUDManagementServiceBase<TDatabase, TDto, TCreateDto, TUp
 
     public async Task<TDto> UpdateAsync(Guid identifier, TUpdateDto request)
     {
-        var dbModel = await dbContext.FindAsync<TDatabase>(identifier);
+        var dbModel = await DbContext.FindAsync<TDatabase>(identifier);
         if (dbModel is null)
             throw new EntityNotFoundException(typeof(TDatabase), identifier);
 
         dbModel = await MapToDb(dbModel, request);
 
-        await dbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
 
         return await MapToDto(dbModel);
     }
 
     public async Task DeleteAsync(Guid identifier)
     {
-        var dbModel = await dbContext.FindAsync<TDatabase>(identifier);
+        var dbModel = await DbContext.FindAsync<TDatabase>(identifier);
         if (dbModel == null)
             return;
 
-        dbContext.Remove(dbModel);
+        DbContext.Remove(dbModel);
 
-        await dbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
     }
 
     protected abstract Task<TDto> MapToDto(TDatabase dbModel);

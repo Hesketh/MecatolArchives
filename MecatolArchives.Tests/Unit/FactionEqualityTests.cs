@@ -5,12 +5,12 @@ public sealed class FactionEqualityTests
     [Fact]
     public void SameValue_WithSameVariants_ExpectedEquals()
     {
-        var factionA = new Faction()
+        var factionA = new Faction
         {
             Identifier = Guid.Parse("51ee1c82-279b-444c-a6aa-a8cd475612fd"),
             Name = "The Council Keleres",
             Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres",
-            Variants =
+            Variants = new FactionVariants(
             [
                 new FactionVariant
                 {
@@ -27,15 +27,15 @@ public sealed class FactionEqualityTests
                     Identifier = Guid.Parse("f487ab41-107f-4a08-8a3c-5f8eade06e2c"),
                     Name = "The Argent Flight"
                 }
-            ]
+            ])
         };
 
-        var factionB = new Faction()
+        var factionB = new Faction
         {
             Identifier = Guid.Parse("51ee1c82-279b-444c-a6aa-a8cd475612fd"),
             Name = "The Council Keleres",
             Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres",
-            Variants =
+            Variants = new FactionVariants(
             [
                 new FactionVariant
                 {
@@ -52,14 +52,8 @@ public sealed class FactionEqualityTests
                     Identifier = Guid.Parse("f487ab41-107f-4a08-8a3c-5f8eade06e2c"),
                     Name = "The Argent Flight"
                 }
-            ]
+            ])
         };
-
-        foreach (var factionAVariant in factionA.Variants)
-        {
-            var x = factionB.Variants.Contains(factionAVariant);
-            Assert.True(x, "Variant is not equal");
-        }
 
         Assert.Equal(factionA, factionB);
     }
@@ -67,12 +61,12 @@ public sealed class FactionEqualityTests
     [Fact]
     public void SameValue_WithLessVariants_ExpectedNotEquals()
     {
-        var factionA = new Faction()
+        var factionA = new Faction
         {
             Identifier = Guid.Parse("51ee1c82-279b-444c-a6aa-a8cd475612fd"),
             Name = "The Council Keleres",
             Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres",
-            Variants =
+            Variants = new FactionVariants(
             [
                 new FactionVariant
                 {
@@ -89,22 +83,22 @@ public sealed class FactionEqualityTests
                     Identifier = Guid.Parse("f487ab41-107f-4a08-8a3c-5f8eade06e2c"),
                     Name = "The Argent Flight"
                 }
-            ]
+            ])
         };
 
-        var factionB = new Faction()
+        var factionB = new Faction
         {
             Identifier = Guid.Parse("51ee1c82-279b-444c-a6aa-a8cd475612fd"),
             Name = "The Council Keleres",
             Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres",
-            Variants =
+            Variants = new FactionVariants(
             [
                 new FactionVariant
                 {
                     Identifier = Guid.Parse("3852bc1c-57d8-44fc-932f-9216c8eebdba"),
                     Name = "The Mentak Coalition"
                 }
-            ]
+            ])
         };
 
         Assert.NotEqual(factionA, factionB);
@@ -113,12 +107,12 @@ public sealed class FactionEqualityTests
     [Fact]
     public void SameValue_WithExtraVariants_ExpectedNotEquals()
     {
-        var factionA = new Faction()
+        var factionA = new Faction
         {
             Identifier = Guid.Parse("51ee1c82-279b-444c-a6aa-a8cd475612fd"),
             Name = "The Council Keleres",
             Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres",
-            Variants =
+            Variants = new FactionVariants(
             [
                 new FactionVariant
                 {
@@ -135,15 +129,15 @@ public sealed class FactionEqualityTests
                     Identifier = Guid.Parse("f487ab41-107f-4a08-8a3c-5f8eade06e2c"),
                     Name = "The Argent Flight"
                 }
-            ]
+            ])
         };
 
-        var factionB = new Faction()
+        var factionB = new Faction
         {
             Identifier = Guid.Parse("51ee1c82-279b-444c-a6aa-a8cd475612fd"),
             Name = "The Council Keleres",
             Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres",
-            Variants =
+            Variants = new FactionVariants(
             [
                 new FactionVariant
                 {
@@ -165,7 +159,7 @@ public sealed class FactionEqualityTests
                     Identifier = Guid.Parse("a387ab41-107f-4a08-8a3c-5f8eade06e2c"),
                     Name = "The Fake Force"
                 }
-            ]
+            ])
         };
 
         Assert.NotEqual(factionA, factionB);
@@ -175,12 +169,12 @@ public sealed class FactionEqualityTests
     [Fact]
     public void SameValue_WithDifferentVariants_ExpectedNotEquals()
     {
-        var factionA = new Faction()
+        var factionA = new Faction
         {
             Identifier = Guid.Parse("51ee1c82-279b-444c-a6aa-a8cd475612fd"),
             Name = "The Council Keleres",
             Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres",
-            Variants =
+            Variants = new FactionVariants(
             [
                 new FactionVariant
                 {
@@ -197,15 +191,15 @@ public sealed class FactionEqualityTests
                     Identifier = Guid.Parse("f487ab41-107f-4a08-8a3c-5f8eade06e2c"),
                     Name = "The Argent Flight"
                 }
-            ]
+            ])
         };
 
-        var factionB = new Faction()
+        var factionB = new Faction
         {
             Identifier = Guid.Parse("51ee1c82-279b-444c-a6aa-a8cd475612fd"),
             Name = "The Council Keleres",
             Url = "https://twilight-imperium.fandom.com/wiki/The_Council_Keleres",
-            Variants =
+            Variants = new FactionVariants(
             [
                 new FactionVariant
                 {
@@ -222,7 +216,7 @@ public sealed class FactionEqualityTests
                     Identifier = Guid.NewGuid(),
                     Name = "The Argent"
                 }
-            ]
+            ])
         };
 
         Assert.NotEqual(factionA, factionB);

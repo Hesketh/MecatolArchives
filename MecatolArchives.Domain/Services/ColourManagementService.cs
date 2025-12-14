@@ -3,8 +3,8 @@ using MecatolArchives.Domain.Dto;
 
 namespace MecatolArchives.Domain.Services;
 
-internal sealed class ColourManagementService(MecatolArchivesDbContext dbContext)
-        : CRUDManagementServiceBase<DataAccess.Models.Colour, Colour, ColourCreateRequest, ColourUpdateRequest>(dbContext), IColourManagementService
+internal sealed class ColourManagementService(MecatolArchivesDbContext dbDbContext)
+        : CRUDManagementServiceBase<DataAccess.Models.Colour, Colour, ColourCreateRequest, ColourUpdateRequest>(dbDbContext), IColourManagementService
 
 {
     protected override Task<Colour> MapToDto(DataAccess.Models.Colour dbModel)

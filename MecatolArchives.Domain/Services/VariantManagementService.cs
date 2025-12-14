@@ -3,8 +3,8 @@ using MecatolArchives.Domain.Dto;
 
 namespace MecatolArchives.Domain.Services;
 
-public sealed class VariantManagementService(MecatolArchivesDbContext dbContext)
-    : CRUDManagementServiceBase<DataAccess.Models.Variant, Variant, VariantCreateRequest, VariantUpdateRequest>(dbContext), IVariantManagementService
+public sealed class VariantManagementService(MecatolArchivesDbContext dbDbContext)
+    : CRUDManagementServiceBase<DataAccess.Models.Variant, Variant, VariantCreateRequest, VariantUpdateRequest>(dbDbContext), IVariantManagementService
 {
     protected override Task<Variant> MapToDto(DataAccess.Models.Variant dbModel)
     {

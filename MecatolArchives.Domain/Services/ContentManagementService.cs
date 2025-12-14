@@ -3,8 +3,8 @@ using MecatolArchives.Domain.Dto;
 
 namespace MecatolArchives.Domain.Services;
 
-public sealed class ContentManagementService(MecatolArchivesDbContext dbContext)
-    : CRUDManagementServiceBase<DataAccess.Models.Content, Content, ContentCreateRequest, ContentUpdateRequest>(dbContext), IContentManagementService
+public sealed class ContentManagementService(MecatolArchivesDbContext dbDbContext)
+    : CRUDManagementServiceBase<DataAccess.Models.Content, Content, ContentCreateRequest, ContentUpdateRequest>(dbDbContext), IContentManagementService
 {
     protected override Task<Content> MapToDto(DataAccess.Models.Content dbModel)
     {

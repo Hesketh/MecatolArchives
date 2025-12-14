@@ -9,7 +9,7 @@ public sealed class FactionManagementService(MecatolArchivesDbContext dbContext)
 {
     protected override async Task<Faction> MapToDto(DataAccess.Models.Faction dbModel)
     {
-        var factionVariants = await dbContext.FactionVariants
+        var factionVariants = await DbContext.FactionVariants
             .Where(x => x.FactionIdentifier == dbModel.Identifier)
             .AsNoTracking()
             .ToListAsync();
@@ -21,7 +21,7 @@ public sealed class FactionManagementService(MecatolArchivesDbContext dbContext)
             Url = dbModel.Url ?? string.Empty
         };
 
-        dto.Variants.AddRange(factionVariants.Select(MapToDto));
+        dto.Variants = new((factionVariants.Select(MapToDto)).ToArray());
 
         return dto;
     }
