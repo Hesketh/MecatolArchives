@@ -422,7 +422,15 @@ public sealed class FactionsControllerTest(AppHostFixture appHostFixture)
         var factions = await appHostFixture.ApiClient.Factions.ReadAsync(new QueryParameters { PageSize = expected.Count }, appHostFixture.CancellationToken);
 
         // Assert
-        factions.Items.Should().Contain(expected);
+        foreach (var faction in factions.Items)
+        {
+            Assert.Contains(faction, expected);
+        }
+
+        foreach (var faction in expected)
+        {
+            Assert.Contains(faction, factions.Items);
+        }
     }
 
     [Fact]
