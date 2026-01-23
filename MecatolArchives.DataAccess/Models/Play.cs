@@ -19,6 +19,4 @@ public class Play
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Identifier { get; set; }
-
-    [NotMapped] public string Name => UtcDate.ToString("yyyy-MM-dd");
 }
