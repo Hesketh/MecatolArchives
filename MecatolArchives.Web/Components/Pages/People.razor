@@ -1,0 +1,88 @@
+@page "/people"
+@rendermode InteractiveServer
+@inject MecatolArchivesApiClient ApiClient
+
+<PageTitle>People</PageTitle>
+
+<h1>People</h1>
+
+@if (people == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in people)
+            {
+                <tr>
+                    <td>@person.Name</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => Delete(person.Identifier)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<h2>Add Person</h2>
+<EditForm Model="newPerson" OnValidSubmit="Create">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="newPerson.Name" />
+        <ValidationMessage For="() => newPerson.Name" />
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</EditForm>
+
+@code {
+    private List<Person>? people;
+    private PersonCreateRequest newPerson = new() { Name = "" };
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        var result = await ApiClient.People.ReadAsync(new QueryParameters { PageSize = 200 });
+        people = [.. result.Items];
+    }
+
+    private async Task Create()
+    {
+        try
+        {
+            errorMessage = null;
+            await ApiClient.People.CreateAsync(newPerson);
+            newPerson = new() { Name = "" };
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task Delete(Guid id)
+    {
+        await ApiClient.People.DeleteAsync(id);
+        await LoadData();
+    }
+}

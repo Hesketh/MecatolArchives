@@ -1,0 +1,88 @@
+@page "/expansions"
+@rendermode InteractiveServer
+@inject MecatolArchivesApiClient ApiClient
+
+<PageTitle>Expansions</PageTitle>
+
+<h1>Expansions</h1>
+
+@if (expansions == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var expansion in expansions)
+            {
+                <tr>
+                    <td>@expansion.Name</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => Delete(expansion.Identifier)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<h2>Add Expansion</h2>
+<EditForm Model="newExpansion" OnValidSubmit="Create">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="newExpansion.Name" />
+        <ValidationMessage For="() => newExpansion.Name" />
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</EditForm>
+
+@code {
+    private List<Content>? expansions;
+    private ContentCreateRequest newExpansion = new() { Name = "" };
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        var result = await ApiClient.Contents.ReadAsync(new QueryParameters { PageSize = 200 });
+        expansions = [.. result.Items];
+    }
+
+    private async Task Create()
+    {
+        try
+        {
+            errorMessage = null;
+            await ApiClient.Contents.CreateAsync(newExpansion);
+            newExpansion = new() { Name = "" };
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task Delete(Guid id)
+    {
+        await ApiClient.Contents.DeleteAsync(id);
+        await LoadData();
+    }
+}

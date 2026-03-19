@@ -1,0 +1,322 @@
+@page "/plays"
+@rendermode InteractiveServer
+@inject MecatolArchivesApiClient ApiClient
+
+<PageTitle>Plays</PageTitle>
+
+<h1>Plays</h1>
+
+@if (plays == null)
+{
+    <p>Loading...</p>
+}
+else if (!plays.Any())
+{
+    <p class="text-muted">No plays recorded yet.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Rules</th>
+                <th>Points</th>
+                <th>Map</th>
+                <th>Players</th>
+                <th>Expansions</th>
+                <th>Variants</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var play in plays)
+            {
+                <tr>
+                    <td>@play.UtcDate.ToString("yyyy-MM-dd")</td>
+                    <td>@play.RulesVersion</td>
+                    <td>@play.PointGoal</td>
+                    <td>@play.Map</td>
+                    <td>
+                        @foreach (var player in play.Players.Items)
+                        {
+                            <div>
+                                <span class="fw-bold">@player.Person.Name</span>
+                                — @player.Faction.Name
+                                <span style="display:inline-block;width:14px;height:14px;background-color:@player.Colour.Hex;border:1px solid #ccc;border-radius:2px;vertical-align:middle;"></span>
+                                @player.Points pts
+                                @if (player.Winner) { <span class="badge bg-success">Winner</span> }
+                                @if (player.Eliminated) { <span class="badge bg-danger">Eliminated</span> }
+                            </div>
+                        }
+                    </td>
+                    <td>@string.Join(", ", play.Expansions.Items.Select(e => e.Name))</td>
+                    <td>@string.Join(", ", play.Variants.Items.Select(v => v.Name))</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => Delete(play.Identifier)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<h2>Add Play</h2>
+<EditForm Model="newPlay" OnValidSubmit="Create">
+    <DataAnnotationsValidator />
+
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label class="form-label">Date</label>
+            <InputDate class="form-control" @bind-Value="newPlay.UtcDate" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Rules Version</label>
+            <InputNumber class="form-control" @bind-Value="newPlay.RulesVersion" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Point Goal</label>
+            <InputNumber class="form-control" @bind-Value="newPlay.PointGoal" />
+        </div>
+        <div class="col-md-5">
+            <label class="form-label">Map</label>
+            <InputText class="form-control" @bind-Value="newPlay.Map" placeholder="Optional" />
+        </div>
+    </div>
+
+    <h5>Players</h5>
+    @foreach (var (player, index) in draftPlayers.Select((p, i) => (p, i)))
+    {
+        <div class="card mb-2">
+            <div class="card-body">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-2">
+                        <label class="form-label">Person</label>
+                        <select class="form-select" @bind="player.PersonIdentifier">
+                            <option value="">— select —</option>
+                            @foreach (var person in availablePeople)
+                            {
+                                <option value="@person.Identifier">@person.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Faction</label>
+                        <select class="form-select" @bind="player.FactionIdentifier">
+                            <option value="">— select —</option>
+                            @foreach (var faction in availableFactions)
+                            {
+                                <option value="@faction.Identifier">@faction.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Colour</label>
+                        <select class="form-select" @bind="player.ColourIdentified">
+                            <option value="">— select —</option>
+                            @foreach (var colour in availableColours)
+                            {
+                                <option value="@colour.Identifier">@colour.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label">Points</label>
+                        <InputNumber class="form-control" @bind-Value="player.Points" />
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label">Draft</label>
+                        <InputNumber class="form-control" @bind-Value="player.DraftOrder" />
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" @bind="player.Winner" id="@($"winner-{index}")" />
+                            <label class="form-check-label" for="@($"winner-{index}")">Winner</label>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" @bind="player.Eliminated" id="@($"elim-{index}")" />
+                            <label class="form-check-label" for="@($"elim-{index}")">Elim.</label>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-outline-danger btn-sm w-100" @onclick="() => RemovePlayer(player)">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <button type="button" class="btn btn-outline-secondary mb-3" @onclick="AddPlayer">+ Add Player</button>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <h5>Expansions</h5>
+            @foreach (var expansion in availableExpansions)
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="exp-@expansion.Identifier"
+                           checked="@selectedExpansionIds.Contains(expansion.Identifier)"
+                           @onchange="e => ToggleExpansion(expansion.Identifier, (bool)e.Value!)" />
+                    <label class="form-check-label" for="exp-@expansion.Identifier">@expansion.Name</label>
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            <h5>Variants</h5>
+            @foreach (var variant in availableVariants)
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="var-@variant.Identifier"
+                           checked="@selectedVariantIds.Contains(variant.Identifier)"
+                           @onchange="e => ToggleVariant(variant.Identifier, (bool)e.Value!)" />
+                    <label class="form-check-label" for="var-@variant.Identifier">@variant.Name</label>
+                </div>
+            }
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Play</button>
+</EditForm>
+
+@code {
+    private List<Play>? plays;
+    private string? errorMessage;
+
+    // Reference data
+    private List<Person> availablePeople = [];
+    private List<Faction> availableFactions = [];
+    private List<Colour> availableColours = [];
+    private List<Content> availableExpansions = [];
+    private List<Variant> availableVariants = [];
+
+    // Form state
+    private PlayFormModel newPlay = new();
+    private List<PlayerDraft> draftPlayers = [];
+    private HashSet<Guid> selectedExpansionIds = [];
+    private HashSet<Guid> selectedVariantIds = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.WhenAll(
+            LoadPlays(),
+            LoadReferenceData()
+        );
+    }
+
+    private async Task LoadPlays()
+    {
+        var result = await ApiClient.Plays.ReadAsync(new QueryParameters { PageSize = 200 });
+        plays = [.. result.Items];
+    }
+
+    private async Task LoadReferenceData()
+    {
+        var peopleTask = ApiClient.People.ReadAsync(new QueryParameters { PageSize = 200 });
+        var factionsTask = ApiClient.Factions.ReadAsync(new QueryParameters { PageSize = 200 });
+        var coloursTask = ApiClient.Colours.ReadAsync(new QueryParameters { PageSize = 200 });
+        var expansionsTask = ApiClient.Contents.ReadAsync(new QueryParameters { PageSize = 200 });
+        var variantsTask = ApiClient.Variants.ReadAsync(new QueryParameters { PageSize = 200 });
+
+        await Task.WhenAll(peopleTask, factionsTask, coloursTask, expansionsTask, variantsTask);
+
+        availablePeople = [.. (await peopleTask).Items];
+        availableFactions = [.. (await factionsTask).Items];
+        availableColours = [.. (await coloursTask).Items];
+        availableExpansions = [.. (await expansionsTask).Items];
+        availableVariants = [.. (await variantsTask).Items];
+    }
+
+    private void AddPlayer()
+    {
+        draftPlayers.Add(new PlayerDraft { DraftOrder = draftPlayers.Count + 1 });
+    }
+
+    private void RemovePlayer(PlayerDraft player)
+    {
+        draftPlayers.Remove(player);
+    }
+
+    private void ToggleExpansion(Guid id, bool selected)
+    {
+        if (selected) selectedExpansionIds.Add(id);
+        else selectedExpansionIds.Remove(id);
+    }
+
+    private void ToggleVariant(Guid id, bool selected)
+    {
+        if (selected) selectedVariantIds.Add(id);
+        else selectedVariantIds.Remove(id);
+    }
+
+    private async Task Create()
+    {
+        try
+        {
+            errorMessage = null;
+
+            var request = new PlayCreateRequest
+            {
+                UtcDate = newPlay.UtcDate,
+                RulesVersion = newPlay.RulesVersion,
+                PointGoal = (uint)newPlay.PointGoal,
+                Map = string.IsNullOrWhiteSpace(newPlay.Map) ? null : newPlay.Map,
+                Players = new([.. draftPlayers.Select(p => new PlayerCreateRequest
+                {
+                    PersonIdentifier = p.PersonIdentifier,
+                    FactionIdentifier = p.FactionIdentifier,
+                    ColourIdentified = p.ColourIdentified,
+                    Points = (uint)p.Points,
+                    DraftOrder = (uint)p.DraftOrder,
+                    Winner = p.Winner,
+                    Eliminated = p.Eliminated,
+                })]),
+                Expansions = new([.. selectedExpansionIds]),
+                Variants = new([.. selectedVariantIds]),
+            };
+
+            await ApiClient.Plays.CreateAsync(request);
+
+            newPlay = new();
+            draftPlayers = [];
+            selectedExpansionIds = [];
+            selectedVariantIds = [];
+
+            await LoadPlays();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task Delete(Guid id)
+    {
+        await ApiClient.Plays.DeleteAsync(id);
+        await LoadPlays();
+    }
+
+    private sealed class PlayFormModel
+    {
+        public DateTime UtcDate { get; set; } = DateTime.UtcNow.Date;
+        public double RulesVersion { get; set; } = 1.0;
+        public int PointGoal { get; set; } = 10;
+        public string? Map { get; set; }
+    }
+
+    private sealed class PlayerDraft
+    {
+        public Guid PersonIdentifier { get; set; }
+        public Guid FactionIdentifier { get; set; }
+        public Guid ColourIdentified { get; set; }
+        public int Points { get; set; }
+        public int DraftOrder { get; set; }
+        public bool Winner { get; set; }
+        public bool Eliminated { get; set; }
+    }
+}

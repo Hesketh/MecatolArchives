@@ -1,0 +1,106 @@
+@page "/colours"
+@rendermode InteractiveServer
+@inject MecatolArchivesApiClient ApiClient
+
+<PageTitle>Colours</PageTitle>
+
+<h1>Colours</h1>
+
+@if (colours == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Swatch</th>
+                <th>Name</th>
+                <th>Hex</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var colour in colours)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(colour.Hex))
+                        {
+                            <span style="display:inline-block;width:24px;height:24px;background-color:@colour.Hex;border:1px solid #ccc;border-radius:4px;"></span>
+                        }
+                    </td>
+                    <td>@colour.Name</td>
+                    <td>@colour.Hex</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => Delete(colour.Identifier)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<h2>Add Colour</h2>
+<EditForm Model="newColour" OnValidSubmit="Create">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="newColour.Name" />
+        <ValidationMessage For="() => newColour.Name" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Hex</label>
+        <div class="input-group">
+            <InputText class="form-control" @bind-Value="newColour.Hex" placeholder="#RRGGBB" />
+            <span class="input-group-text p-1">
+                <span style="display:inline-block;width:32px;height:32px;background-color:@newColour.Hex;border-radius:4px;"></span>
+            </span>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</EditForm>
+
+@code {
+    private List<Colour>? colours;
+    private ColourCreateRequest newColour = new() { Name = "", Hex = "" };
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        var result = await ApiClient.Colours.ReadAsync(new QueryParameters { PageSize = 200 });
+        colours = [.. result.Items];
+    }
+
+    private async Task Create()
+    {
+        try
+        {
+            errorMessage = null;
+            await ApiClient.Colours.CreateAsync(newColour);
+            newColour = new() { Name = "", Hex = "" };
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task Delete(Guid id)
+    {
+        await ApiClient.Colours.DeleteAsync(id);
+        await LoadData();
+    }
+}

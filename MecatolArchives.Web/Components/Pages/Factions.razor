@@ -1,0 +1,101 @@
+@page "/factions"
+@rendermode InteractiveServer
+@inject MecatolArchivesApiClient ApiClient
+
+<PageTitle>Factions</PageTitle>
+
+<h1>Factions</h1>
+
+@if (factions == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>URL</th>
+                <th>Variants</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var faction in factions)
+            {
+                <tr>
+                    <td>@faction.Name</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(faction.Url))
+                        {
+                            <a href="@faction.Url" target="_blank">Wiki</a>
+                        }
+                    </td>
+                    <td>@string.Join(", ", faction.Variants.Items.Select(v => v.Name))</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => Delete(faction.Identifier)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<h2>Add Faction</h2>
+<EditForm Model="newFaction" OnValidSubmit="Create">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="newFaction.Name" />
+        <ValidationMessage For="() => newFaction.Name" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">URL</label>
+        <InputText class="form-control" @bind-Value="newFaction.Url" />
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</EditForm>
+
+@code {
+    private List<Faction>? factions;
+    private FactionCreateRequest newFaction = new() { Name = "" };
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        var result = await ApiClient.Factions.ReadAsync(new QueryParameters { PageSize = 200 });
+        factions = [.. result.Items];
+    }
+
+    private async Task Create()
+    {
+        try
+        {
+            errorMessage = null;
+            await ApiClient.Factions.CreateAsync(newFaction);
+            newFaction = new() { Name = "" };
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task Delete(Guid id)
+    {
+        await ApiClient.Factions.DeleteAsync(id);
+        await LoadData();
+    }
+}
