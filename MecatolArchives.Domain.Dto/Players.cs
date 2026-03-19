@@ -2,7 +2,7 @@
 
 namespace MecatolArchives.Domain.Dto;
 
-public record Players(Players[] Items)
+public record Players(Player[] Items)
 {
     protected Players(Players other)
     {

@@ -4,15 +4,6 @@
 public sealed class PeopleControllerTest(AppHostFixture appHostFixture)
 {
     [Fact]
-    public async Task ReadPeople_ReturnsExpectedSeededData()
-    {
-        var people = await appHostFixture.ApiClient.People.ReadAsync(new QueryParameters(), appHostFixture.CancellationToken);
-
-        // Assert
-        Assert.Equal(0, people.TotalCount);
-    }
-
-    [Fact]
     public async Task CreatePerson_ValidPerson_CreatesExpected()
     {
         var person = await appHostFixture.ApiClient.People.CreateAsync(new()

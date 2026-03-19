@@ -35,10 +35,10 @@ public sealed class FactionControllerClient(HttpClient httpClient, JsonSerialize
         return content ?? throw new NullReferenceException();
     }
 
-    public async Task<Faction> UpdateAsync(Guid identifier, FactionCreateRequest request, CancellationToken cancellationToken = default)
+    public async Task<Faction> UpdateAsync(Guid identifier, FactionUpdateRequest request, CancellationToken cancellationToken = default)
     {
         var requestContent = JsonContent.Create(request);
-        var response = await httpClient.PostAsync($"/api/factions/{identifier}", requestContent, cancellationToken);
+        var response = await httpClient.PutAsync($"/api/factions/{identifier}", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadFromJsonAsync<Faction>(jsonOptions, cancellationToken);

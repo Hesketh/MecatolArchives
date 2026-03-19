@@ -35,10 +35,10 @@ public sealed class VariantControllerClient(HttpClient httpClient, JsonSerialize
         return content ?? throw new NullReferenceException();
     }
 
-    public async Task<Variant> UpdateAsync(Guid identifier, VariantCreateRequest request, CancellationToken cancellationToken = default)
+    public async Task<Variant> UpdateAsync(Guid identifier, VariantUpdateRequest request, CancellationToken cancellationToken = default)
     {
         var requestContent = JsonContent.Create(request);
-        var response = await httpClient.PostAsync($"/api/variants/{identifier}", requestContent, cancellationToken);
+        var response = await httpClient.PutAsync($"/api/variants/{identifier}", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadFromJsonAsync<Variant>(jsonOptions, cancellationToken);

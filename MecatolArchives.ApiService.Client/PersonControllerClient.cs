@@ -35,10 +35,10 @@ public sealed class PersonControllerClient(HttpClient httpClient, JsonSerializer
         return content ?? throw new NullReferenceException();
     }
 
-    public async Task<Person> UpdateAsync(Guid identifier, PersonCreateRequest request, CancellationToken cancellationToken = default)
+    public async Task<Person> UpdateAsync(Guid identifier, PersonUpdateRequest request, CancellationToken cancellationToken = default)
     {
         var requestContent = JsonContent.Create(request);
-        var response = await httpClient.PostAsync($"/api/persons/{identifier}", requestContent, cancellationToken);
+        var response = await httpClient.PutAsync($"/api/persons/{identifier}", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadFromJsonAsync<Person>(jsonOptions, cancellationToken);

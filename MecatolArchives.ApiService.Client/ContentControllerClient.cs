@@ -35,10 +35,10 @@ public sealed class ContentControllerClient(HttpClient httpClient, JsonSerialize
         return content ?? throw new NullReferenceException();
     }
 
-    public async Task<Content> UpdateAsync(Guid identifier, ContentCreateRequest request, CancellationToken cancellationToken = default)
+    public async Task<Content> UpdateAsync(Guid identifier, ContentUpdateRequest request, CancellationToken cancellationToken = default)
     {
         var requestContent = JsonContent.Create(request);
-        var response = await httpClient.PostAsync($"/api/contents/{identifier}", requestContent, cancellationToken);
+        var response = await httpClient.PutAsync($"/api/contents/{identifier}", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadFromJsonAsync<Content>(jsonOptions, cancellationToken);

@@ -35,10 +35,10 @@ public sealed class ColourControllerClient(HttpClient httpClient, JsonSerializer
         return content ?? throw new NullReferenceException();
     }
 
-    public async Task<Colour> UpdateAsync(Guid identifier, ColourCreateRequest request, CancellationToken cancellationToken = default)
+    public async Task<Colour> UpdateAsync(Guid identifier, ColourUpdateRequest request, CancellationToken cancellationToken = default)
     {
         var requestContent = JsonContent.Create(request);
-        var response = await httpClient.PostAsync($"/api/colours/{identifier}", requestContent, cancellationToken);
+        var response = await httpClient.PutAsync($"/api/colours/{identifier}", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadFromJsonAsync<Colour>(jsonOptions, cancellationToken);
